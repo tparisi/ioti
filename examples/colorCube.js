@@ -24,7 +24,8 @@ ColorCube.prototype.initScene = function() {
 	var controller = Vizi.Prefabs.ModelController({active:true, allowZoom:false, headlight:true});
 	var controllerScript = controller.getComponent(Vizi.ModelControllerScript);
 	controllerScript.camera = camera1;
-	camera1.position.z = 7.77;
+	var ob = 4 * Math.sqrt(2);
+	camera1.position.set(ob, ob, ob);
 	this.app.addObject(controller);
 		
 	this.scene = new Vizi.Object;
@@ -88,7 +89,10 @@ ColorCube.prototype.handleColor = function(cube, color) {
 
 ColorCube.prototype.setColor = function() {
 	var color = this.currentColor;
-	console.log("setColor:" + color.r + "," + color.g + "," + color.b);	
+	if (color) {
+//		console.log("setColor:" + color.r + "," + color.g + "," + color.b);	
+	}
+	
 	holiday.setColor(color);
 }
 
@@ -111,16 +115,16 @@ ColorCube.prototype.createCubes = function() {
 	var i, j, k;
 	var x = -2;
 	var r = 0;
-	for (i = 0; i < 8; i++) {
+	for (i = 0; i < 9; i++) {
 		var y = -2;
 		var g = 0;
-		for (j = 0; j < 8; j++) {
+		for (j = 0; j < 9; j++) {
 			var b = 0;
 			var z = -2;
-			for (k = 0; k < 8; k++) {
-				r = 255 * i / 7;
-				g = 255 * j / 7;
-				b = 255 * k / 7;
+			for (k = 0; k < 9; k++) {
+				r = 255 * i / 8;
+				g = 255 * j / 8;
+				b = 255 * k / 8;
 				var color = r << 16 | (g << 8) | b;
 				var cube = new Vizi.Object;	
 				var visual = new Vizi.Visual(

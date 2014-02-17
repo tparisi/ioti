@@ -4,18 +4,15 @@ holiday = {
 
 holiday.build = function(element, canvasElement) {
 	holiday.colorCube = new ColorCube(element);
-	canvasElement.addEventListener('mousedown', holiday.onCanvasMouseDown, false );
-	canvasElement.addEventListener('mouseup', holiday.onCanvasMouseUp, false );
+
+	holiday.lightCircle = new LightCircle(canvasElement);
 	
 	holiday.rgbElement = document.getElementById("rgb");
 	holiday.swatchElement = document.getElementById("swatch");
-}
 
-holiday.onCanvasMouseDown = function(event) {
-}
+	document.addEventListener('mousedown', function(event) { holiday.lightCircle.onMouseDown(event); }, false );
+	document.addEventListener('mouseup',  function(event) { holiday.lightCircle.onMouseUp(event); }, false );
 
-holiday.onCanvasMouseUp = function(event) {
-	alert("got Canvas mouse up");
 }
 
 // color handling
@@ -27,11 +24,15 @@ holiday.handleColor = function(color) {
 }
 
 holiday.setColor = function(color) {
-	color = rgbToCSS(color);
-	holiday.swatchElement.style.backgroundColor = color;
+	if (color) {
+		color = rgbToCSS(color);
+		holiday.swatchElement.style.backgroundColor = color;
+		holiday.lightCircle.setColor(color);
+	}
 //	console.log("setColor:" + color.r + "," + color.g + "," + color.b);	
 }
 
 holiday.run = function() {
 	holiday.colorCube.run();
+	holiday.lightCircle.run();
 }
