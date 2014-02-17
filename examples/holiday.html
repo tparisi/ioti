@@ -6,13 +6,23 @@
 <script src="../libs/parsecss/jquery.parsecss.js" ></script>
 <script src="../libs/vizi/vizi.js" ></script>
 <script src="./holiday.js" ></script>
+<link href='./css/fonts.css' rel='stylesheet' type='text/css'>
 <title>Holiday</title>
 
 <style>
+body {
+	background-color:lightgray;
+}
+
+* {
+	font-family: 'PT Sans', sans-serif;
+}
+
 #info {
 	position:absolute;
 	left:800px;
 	top:20px;
+	font-size:12px;
 }
 
 #swatch {
@@ -20,7 +30,15 @@
 	top:20px;
 	width:64px;	
 	height:64px;
-	background-color:red;
+	background-color:black;
+}
+
+#rgb {
+	position:absolute;
+	top:90px;
+	left: 0px;	
+	width: 100px;
+	font-style:italic;
 }
 
 </style>
@@ -28,18 +46,23 @@
 $(document).ready(function(){
 
 	var container = document.getElementById("container");
-	holiday.build(container);
+	var canvas = document.getElementById("circle_canvas");
+	holiday.build(container, canvas);
 	holiday.run();
 });
 
 </script>
 </head>
 <body>
-<div id="container" style="width:800px; height:800px;">
+<div id="circle" style="width:1000px; height:1000px;background-color:red;z-index:-100;">
+<canvas id="circle_canvas" width="1000" height="1000"></canvas>
+</div>
+<div id="container" style="position:absolute;border:1px dotted lightgray; left:200px;top:200px;width:600px; height:600px; z-index:10;">
 </div>
 <div id="info">
-Color
 	<div id="swatch">
+	</div>
+	<div id="rgb">
 	</div>
 </div>
 </body>

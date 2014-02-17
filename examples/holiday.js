@@ -2,12 +2,17 @@ holiday = {
 		
 };
 
-holiday.build = function(element) {
+holiday.build = function(element, canvasElement) {
 	holiday.app = new Vizi.Application({ container : element });
+	element.addEventListener('mousedown', holiday.onMouseDown, false );
+	element.addEventListener('mouseup', holiday.onMouseUp, false );
+	canvasElement.addEventListener('mousedown', holiday.onCanvasMouseDown, false );
+	canvasElement.addEventListener('mouseup', holiday.onCanvasMouseUp, false );
 	
 	holiday.initScene();
 	holiday.createCubes();
 	
+	holiday.rgbElement = document.getElementById("rgb");
 	holiday.swatchElement = document.getElementById("swatch");
 }
 
@@ -16,12 +21,12 @@ holiday.initScene = function() {
 	var camobj = new Vizi.Object;
 	camera1 = new Vizi.PerspectiveCamera({active:true});
 	camobj.addComponent(camera1);
-	camera1.position.z = 10;
 	holiday.app.addObject(camobj);
 
-	var controller = Vizi.Prefabs.ModelController({active:true, headlight:true});
+	var controller = Vizi.Prefabs.ModelController({active:true, allowZoom:false, headlight:true});
 	var controllerScript = controller.getComponent(Vizi.ModelControllerScript);
 	controllerScript.camera = camera1;
+	camera1.position.z = 7.77;
 	holiday.app.addObject(controller);
 		
 	holiday.scene = new Vizi.Object;
@@ -38,10 +43,27 @@ holiday.initScene = function() {
 	holiday.group = group;
 }
 
-holiday.Cube = {};
-holiday.Cube.DEFAULT_WIDTH = .333;
-holiday.Cube.DEFAULT_HEIGHT = .333;
-holiday.Cube.DEFAULT_DEPTH = .333;
+// event/input handling
+holiday.dragging = false;
+holiday.onMouseDown = function(event) {
+	if (!holiday.currentColor)
+		holiday.dragging = true;
+}
+
+holiday.onMouseUp = function(event) {
+	holiday.dragging = false;
+}
+
+holiday.onCanvasMouseDown = function(event) {
+}
+
+holiday.onCanvasMouseUp = function(event) {
+	alert("got Canvas mouse up");
+}
+
+// color handling
+holiday.currentColor = null;
+holiday.currentColorCube = null;
 
 hexToRGB = function(color) {
 	return {
@@ -62,18 +84,52 @@ rgbToCSS = function(color) {
 	return "#" + r + g + b;
 }
 
-createCubeHandler = function(color) {
-	color = hexToRGB(color);
-	color = rgbToCSS(color);
+onCubeMouseUp = function() {
+	holiday.setColor();
+	holiday.currentColor = null;
+}
+
+onCubeMouseOut = function() {
+	holiday.currentColor = null;
+}
+
+createCubeHandler = function(cube, color) {
 	return function(event) {
-		console.log ("Color: ", color);
-		holiday.handleColor(color);
+		// console.log ("Event: ", event);
+		// console.log ("Color: ", color);
+		holiday.handleColor(cube, color);
 	}
 }
 
-holiday.handleColor = function(color) {
-	holiday.swatchElement.style.backgroundColor = color;
+holiday.handleColor = function(cube, color) {
+	if (holiday.dragging)
+		return;
+	
+	color = hexToRGB(color);
+	holiday.currentColor = color;
+	holiday.rgbElement.innerHTML = color.r + "," + color.g + "," + color.b;
+	
+/*
+
+	cube.transform.scale.set(1.2, 1.2, 1.2);
+	if (holiday.currentColorCube)
+		holiday.currentColorCube.transform.scale.set(1, 1, 1);
+*/
+	
+	holiday.currentColorCube = cube;
 }
+
+holiday.setColor = function() {
+	var color = rgbToCSS(holiday.currentColor);
+	holiday.swatchElement.style.backgroundColor = color;
+	console.log("setColor:" + color.r + "," + color.g + "," + color.b);	
+}
+
+holiday.Cube = {};
+holiday.Cube.DEFAULT_WIDTH = .333;
+holiday.Cube.DEFAULT_HEIGHT = .333;
+holiday.Cube.DEFAULT_DEPTH = .333;
+holiday.Cube.USE_WIREFRAME_FOR_CUBE = true;
 
 holiday.createCubes = function() {
 	
@@ -101,14 +157,29 @@ holiday.createCubes = function() {
 				var cube = new Vizi.Object;	
 				var visual = new Vizi.Visual(
 						{ geometry: new THREE.CubeGeometry(width, height, depth),
-							material: new THREE.MeshPhongMaterial({ color : color,
+							material: new THREE.MeshBasicMaterial({ color : color,
 								map: image ? THREE.ImageUtils.loadTexture(image) :
 								null})
 						});
 				cube.addComponent(visual);
+
+				if (holiday.Cube.USE_WIREFRAME_FOR_CUBE) {
+					/* wireframe outline */
+					var wf = new Vizi.Object;	
+					var visual = new Vizi.Visual(
+							{ geometry: new THREE.CubeGeometry(width * 1.01, height * 1.01, depth * 1.01),
+								material: new THREE.MeshBasicMaterial({ color : 0x888888,
+									wireframe:true})
+							});
+					wf.addComponent(visual);
+					cube.addChild(wf);
+				}
+				
 				
 				var picker = new Vizi.Picker;
-				picker.addEventListener("mouseover", createCubeHandler(color));
+				picker.addEventListener("mouseover", createCubeHandler(cube, color));
+				picker.addEventListener("mouseup", onCubeMouseUp);
+				picker.addEventListener("mouseout", onCubeMouseOut);
 				cube.addComponent(picker);
 			
 			    // Tilt the cube toward the viewer so we can see 3D-ness
