@@ -135,10 +135,23 @@ LightCircle.prototype.onMouseDown = function(event) {
 	var offset = {};
 	this.calcElementOffset(offset);
 	
-	var eltx = event.clientX - offset.left;
-	var elty = event.clientY - offset.top;
+	var eltx = event.pageX - offset.left;
+	var elty = event.pageY - offset.top;
 
 	var p = { x : eltx, y : elty };
+
+	var foundIndex = -1;
+	var i, len = this.lightPositions.length;
+	for (i = 0; i < len; i++) {
+		var pos = this.lightPositions[i];
+		var dist = this.calcDistance(p, pos);
+		if (dist < LightCircle.LIGHT_BORDER_RADIUS) {
+			foundIndex = i;
+		}
+	}
+	
+	if (foundIndex != -1)
+		this.currentLight = foundIndex;
 }
 
 LightCircle.prototype.onMouseUp = function(event) {
@@ -146,18 +159,10 @@ LightCircle.prototype.onMouseUp = function(event) {
 	var offset = {};
 	this.calcElementOffset(offset);
 	
-	var eltx = event.clientX - offset.left;
-	var elty = event.clientY - offset.top;
+	var eltx = event.pageX - offset.left;
+	var elty = event.pageY - offset.top;
 
 	var p = { x : eltx, y : elty };
 	
-	var i, len = this.lightPositions.length;
-	for (i = 0; i < len; i++) {
-		var pos = this.lightPositions[i];
-		var dist = this.calcDistance(p, pos);
-		if (dist < LightCircle.LIGHT_BORDER_RADIUS) {
-			this.currentLight = i;
-		}
-	}
 }
 
