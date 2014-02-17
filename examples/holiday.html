@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script src="../libs/jquery-1.9.1/jquery-1.9.1.js"></script>
+<script src="../libs/parsecss/jquery.parsecss.js" ></script>
+<script src="../libs/vizi/vizi.js" ></script>
+<script src="./holiday.js" ></script>
+<title>Holiday</title>
+
+<style>
+#info {
+	position:absolute;
+	left:800px;
+	top:20px;
+}
+
+#swatch {
+	position:absolute;
+	top:20px;
+	width:64px;	
+	height:64px;
+	background-color:red;
+}
+
+</style>
+<script>
+$(document).ready(function(){
+
+	var container = document.getElementById("container");
+	holiday.build(container);
+	holiday.run();
+});
+
+</script>
+</head>
+<body>
+<div id="container" style="width:800px; height:800px;">
+</div>
+<div id="info">
+Color
+	<div id="swatch">
+	</div>
+</div>
+</body>
+</html>
