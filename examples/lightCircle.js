@@ -1,7 +1,7 @@
-LightCircle = function(element) {
+LightCircle = function(element, borderRadius) {
 	
 	this.dragging = false;
-	this.currentLight = 44;
+	this.currentLight = 0;
 	this.currentColor = null;
 	this.currentColorCube = null;
 	
@@ -10,12 +10,13 @@ LightCircle = function(element) {
 	
 	var that = this;
 
+	this.borderRadius = borderRadius ? borderRadius : LightCircle.DEFAULT_BORDER_RADIUS;
 	this.initControls();
 }
 
 LightCircle.prototype = new Object;
 
-LightCircle.BORDER_RADIUS = 360;
+LightCircle.DEFAULT_BORDER_RADIUS = 360;
 LightCircle.BORDER_COLOR = '#dddddd';
 LightCircle.BORDER_COLOR_HIGHLIGHT = '#888888';
 LightCircle.LIGHT_RADIUS = 6;
@@ -30,12 +31,12 @@ LightCircle.prototype.initControls = function() {
 	for (i = 0; i < LightCircle.NUM_LIGHTS; i++) {
 		var theta = Math.PI * 2 * i / LightCircle.NUM_LIGHTS;
 		positions.push( {
-			x : w / 2 + LightCircle.BORDER_RADIUS * Math.cos(theta),
-			y : w / 2 + LightCircle.BORDER_RADIUS * Math.sin(theta)
+			x : w / 2 + this.borderRadius * Math.cos(theta),
+			y : w / 2 - this.borderRadius * Math.sin(theta)
 		});
 		textPositions.push( {
-			x : w / 2 + (LightCircle.BORDER_RADIUS + 20) * Math.cos(theta),
-			y : w / 2 + (LightCircle.BORDER_RADIUS + 20) * Math.sin(theta)
+			x : w / 2 + (this.borderRadius + 20) * Math.cos(theta),
+			y : w / 2 - (this.borderRadius + 20) * Math.sin(theta)
 		});
 		lightColors.push('black');
 	}
@@ -43,7 +44,6 @@ LightCircle.prototype.initControls = function() {
 	this.lightPositions = positions;
 	this.textPositions = textPositions;
 	this.lightColors = lightColors;
-	this.lightColors[0] = 'orange';
 }
 
 LightCircle.prototype.runLoop = function() {
@@ -93,7 +93,8 @@ LightCircle.prototype.drawLights = function() {
 	    this.context.beginPath();
 	    this.context.arc(pos.x, pos.y, lightBorderRadius, 0, 2 * Math.PI, false);
 	    this.context.stroke();
-		this.context.fillText(i + 1, textPos.x, textPos.y);
+		this.context.fillStyle = 'black';
+		this.context.fillText(i, textPos.x, textPos.y);
 	    if (i == this.currentLight) {
 	    	this.context.restore();
 	    }
@@ -150,8 +151,10 @@ LightCircle.prototype.onMouseDown = function(event) {
 		}
 	}
 	
-	if (foundIndex != -1)
+	if (foundIndex != -1) {
 		this.currentLight = foundIndex;
+		holiday.setLight(foundIndex);
+	}
 }
 
 LightCircle.prototype.onMouseUp = function(event) {
