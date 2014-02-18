@@ -19,6 +19,8 @@ holiday.build = function(element, canvasDiv, canvasElement) {
 
 	document.addEventListener('mousedown', function(event) { holiday.lightCircle.onMouseDown(event); }, false );
 	document.addEventListener('mouseup',  function(event) { holiday.lightCircle.onMouseUp(event); }, false );
+	document.addEventListener( 'touchstart', function(event) { holiday.lightCircle.onTouchStart(event); }, false );
+	document.addEventListener( 'touchend', function(event) { holiday.lightCircle.onTouchEnd(event); }, false );
 	window.addEventListener( 'resize', function(event) { holiday.onWindowResize(event); }, false );
 
 	holiday.colorCube = new ColorCube(element);

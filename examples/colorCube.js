@@ -152,6 +152,8 @@ ColorCube.prototype.createCubes = function() {
 				picker.addEventListener("mouseover", this.createCubeHandler(cube, color));
 				picker.addEventListener("mouseup", function(event) { that.onCubeMouseUp(); });
 				picker.addEventListener("mouseout", function(event) { that.onCubeMouseOut(); } );
+				picker.addEventListener("touchstart", this.createCubeHandler(cube, color));
+				picker.addEventListener("touchend", function(event) { that.onCubeMouseUp(); });
 				cube.addComponent(picker);
 			
 			    // Tilt the cube toward the viewer so we can see 3D-ness
