@@ -22,6 +22,7 @@ LightCircle.BORDER_COLOR_HIGHLIGHT = '#888888';
 LightCircle.LIGHT_RADIUS = 8;
 LightCircle.LIGHT_BORDER_RADIUS = 10;
 LightCircle.NUM_LIGHTS = 50;
+LightCircle.AUTO_ADVANCE = true;
 
 LightCircle.prototype.initControls = function() {
 
@@ -108,12 +109,26 @@ LightCircle.prototype.drawLights = function() {
 LightCircle.prototype.setColor = function(color) {
 	if (this.currentLight != -1) {
 		this.lightColors[this.currentLight] = color;
+		if (LightCircle.AUTO_ADVANCE)
+			this.nextLight();
 	}
 }
 
 LightCircle.prototype.setBorderRadius = function(borderRadius) {
 	this.borderRadius = borderRadius;
 	this.initControls();
+}
+
+LightCircle.prototype.setLight = function(index) {
+	this.currentLight = index;
+	holiday.setLight(index);
+}
+
+LightCircle.prototype.nextLight = function() {
+	var index = ++this.currentLight;
+	if (index >= LightCircle.NUM_LIGHTS)
+		index = 0;
+	this.setLight(index);
 }
 
 LightCircle.prototype.run = function() {
@@ -161,8 +176,7 @@ LightCircle.prototype.onMouseDown = function(event) {
 	}
 	
 	if (foundIndex != -1) {
-		this.currentLight = foundIndex;
-		holiday.setLight(foundIndex);
+		this.setLight(foundIndex);
 	}
 }
 

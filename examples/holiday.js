@@ -7,25 +7,34 @@ holiday.currentLight = -1;
 
 holiday.build = function(element, canvasDiv, canvasElement) {
 
+	
 	holiday.colorCubeElement = element;
 	holiday.canvasDiv = canvasDiv;
 	holiday.canvasElement = canvasElement;
 
-	holiday.onWindowResize();
-
 	holiday.rgbElement = document.getElementById("rgb");
 	holiday.swatchElement = document.getElementById("swatch");
 	holiday.lightElement = document.getElementById("light");
+	holiday.statusElement = document.getElementById("status");
 
+	holiday.statusElement.innerHTML += "initializing layout...<br>";
+	
 	document.addEventListener('mousedown', function(event) { holiday.lightCircle.onMouseDown(event); }, false );
 	document.addEventListener('mouseup',  function(event) { holiday.lightCircle.onMouseUp(event); }, false );
 	document.addEventListener( 'touchstart', function(event) { holiday.lightCircle.onTouchStart(event); }, false );
 	document.addEventListener( 'touchend', function(event) { holiday.lightCircle.onTouchEnd(event); }, false );
 	window.addEventListener( 'resize', function(event) { holiday.onWindowResize(event); }, false );
 
+	// calculate canvas sizes based on page dimensions - do this early
+	holiday.onWindowResize();
+	
+	holiday.statusElement.innerHTML += "initializing cube...<br>";
 	holiday.colorCube = new ColorCube(element);
+	holiday.statusElement.innerHTML += "initializing light controls...<br>";
 	holiday.lightCircle = new LightCircle(canvasElement, holiday.lightCircleRadius);
+	holiday.statusElement.innerHTML += "done.";
 	holiday.setLight(0);
+	holiday.statusElement.innerHTML = "";
 }
 
 // color handling

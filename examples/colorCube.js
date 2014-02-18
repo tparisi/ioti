@@ -9,7 +9,6 @@ ColorCube = function(element) {
 	
 	this.dragging = false;
 	this.currentColor = null;
-	this.currentColorCube = null;
 }
 
 ColorCube.prototype = new Object;
@@ -55,7 +54,6 @@ ColorCube.prototype.onMouseUp = function(event) {
 // color handling
 ColorCube.prototype.onCubeMouseUp = function() {
 	this.setColor();
-	this.currentColor = null;
 }
 
 ColorCube.prototype.onCubeMouseOut = function() {
@@ -75,14 +73,6 @@ ColorCube.prototype.handleColor = function(cube, color) {
 	
 	color = hexToRGB(color);
 	this.currentColor = color;
-/*
-
-	cube.transform.scale.set(1.2, 1.2, 1.2);
-	if (this.currentColorCube)
-		this.currentColorCube.transform.scale.set(1, 1, 1);
-*/
-	
-	this.currentColorCube = cube;
 	
 	holiday.handleColor(color);
 }
