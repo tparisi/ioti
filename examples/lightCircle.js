@@ -67,7 +67,7 @@ LightCircle.prototype.drawBorder = function() {
     this.context.strokeStyle = LightCircle.BORDER_COLOR;
     this.context.lineWidth = 2;
     this.context.beginPath();
-    this.context.arc(w/2, h/2, LightCircle.BORDER_RADIUS, 0, 2 * Math.PI, false);
+    this.context.arc(w/2, h/2, this.borderRadius, 0, 2 * Math.PI, false);
     this.context.stroke();
 }
 
@@ -105,6 +105,11 @@ LightCircle.prototype.setColor = function(color) {
 	if (this.currentLight != -1) {
 		this.lightColors[this.currentLight] = color;
 	}
+}
+
+LightCircle.prototype.setBorderRadius = function(borderRadius) {
+	this.borderRadius = borderRadius;
+	this.initControls();
 }
 
 LightCircle.prototype.run = function() {
@@ -168,4 +173,6 @@ LightCircle.prototype.onMouseUp = function(event) {
 	var p = { x : eltx, y : elty };
 	
 }
+
+
 

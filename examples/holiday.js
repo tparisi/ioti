@@ -2,41 +2,27 @@ holiday = {
 		
 };
 
-holiday.LIGHTCIRCLE_BORDER_RADIUS = 360;
+holiday.lightCircleRadius = 0;
 holiday.currentLight = -1;
 
 holiday.build = function(element, canvasDiv, canvasElement) {
-	
-	var w = element.offsetWidth;
-	var h = element.offsetHeight;
-	var dim = Math.min(w, h);
-	element.style.width = dim + "px";
-	element.style.height = dim + "px";
-	element.style.left = (window.innerWidth - element.offsetWidth) / 2 + "px";
-	element.style.top = (window.innerHeight - element.offsetHeight) / 2 + "px";
-	var l = element.offsetLeft;
-	var t = element.offsetTop;
-	
-	holiday.colorCube = new ColorCube(element);
 
-	dim += 120;
+	holiday.colorCubeElement = element;
 	holiday.canvasDiv = canvasDiv;
 	holiday.canvasElement = canvasElement;
-	canvasElement.width = dim;
-	canvasElement.height = dim;
-	canvasDiv.style.width = dim + "px";
-	canvasDiv.style.height = dim + "px";
-	canvasDiv.style.left = l - 60 + "px";
-	canvasDiv.style.top = t - 60 + "px";
-	holiday.lightCircle = new LightCircle(canvasElement, dim / 2 - 40);
-	
+
+	holiday.onWindowResize();
+
 	holiday.rgbElement = document.getElementById("rgb");
 	holiday.swatchElement = document.getElementById("swatch");
 	holiday.lightElement = document.getElementById("light");
 
 	document.addEventListener('mousedown', function(event) { holiday.lightCircle.onMouseDown(event); }, false );
 	document.addEventListener('mouseup',  function(event) { holiday.lightCircle.onMouseUp(event); }, false );
+	window.addEventListener( 'resize', function(event) { holiday.onWindowResize(event); }, false );
 
+	holiday.colorCube = new ColorCube(element);
+	holiday.lightCircle = new LightCircle(canvasElement, holiday.lightCircleRadius);
 	holiday.setLight(0);
 }
 
@@ -64,6 +50,40 @@ holiday.setLight = function(lightIndex) {
 	}
 }
 
+// event handling
+holiday.onWindowResize = function(event) {
+	
+	holiday.colorCubeElement.style.left = "20%";
+	holiday.colorCubeElement.style.top = "20%";
+	holiday.colorCubeElement.style.width = "60%";
+	holiday.colorCubeElement.style.height = "60%";
+	
+	var w = holiday.colorCubeElement.offsetWidth;
+	var h = holiday.colorCubeElement.offsetHeight;
+	var dim = Math.min(w, h);
+	holiday.colorCubeElement.style.width = dim + "px";
+	holiday.colorCubeElement.style.height = dim + "px";
+	holiday.colorCubeElement.style.left = (window.innerWidth - holiday.colorCubeElement.offsetWidth) / 2 + "px";
+	holiday.colorCubeElement.style.top = (window.innerHeight - holiday.colorCubeElement.offsetHeight) / 2 + "px";
+	var l = holiday.colorCubeElement.offsetLeft;
+	var t = holiday.colorCubeElement.offsetTop;
+	
+
+	dim += 120;
+	holiday.canvasElement.width = dim;
+	holiday.canvasElement.height = dim;
+	holiday.canvasDiv.style.width = dim + "px";
+	holiday.canvasDiv.style.height = dim + "px";
+	holiday.canvasDiv.style.left = l - 60 + "px";
+	holiday.canvasDiv.style.top = t - 60 + "px";
+	
+	holiday.lightCircleRadius = dim / 2 - 40;
+	if (holiday.lightCircle) {
+		holiday.lightCircle.setBorderRadius(holiday.lightCircleRadius);
+	}
+}
+
+// app run loop(s)
 holiday.run = function() {
 	holiday.colorCube.run();
 	holiday.lightCircle.run();
