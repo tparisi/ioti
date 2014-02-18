@@ -19,8 +19,8 @@ LightCircle.prototype = new Object;
 LightCircle.DEFAULT_BORDER_RADIUS = 360;
 LightCircle.BORDER_COLOR = '#dddddd';
 LightCircle.BORDER_COLOR_HIGHLIGHT = '#888888';
-LightCircle.LIGHT_RADIUS = 6;
-LightCircle.LIGHT_BORDER_RADIUS = 8;
+LightCircle.LIGHT_RADIUS = 8;
+LightCircle.LIGHT_BORDER_RADIUS = 10;
 LightCircle.NUM_LIGHTS = 50;
 
 LightCircle.prototype.initControls = function() {
@@ -30,13 +30,17 @@ LightCircle.prototype.initControls = function() {
 	var i, positions = [], textPositions = [], lightColors = [];
 	for (i = 0; i < LightCircle.NUM_LIGHTS; i++) {
 		var theta = Math.PI * 2 * i / LightCircle.NUM_LIGHTS;
+		var costheta = Math.cos(theta);
+		var sintheta = Math.sin(theta);
+		var xTextOffset = costheta > 0 ? 24 : 36;
+		var yTextOffset = 24;
 		positions.push( {
-			x : w / 2 + this.borderRadius * Math.cos(theta),
-			y : w / 2 - this.borderRadius * Math.sin(theta)
+			x : w / 2 + this.borderRadius * costheta,
+			y : w / 2 - this.borderRadius * sintheta
 		});
 		textPositions.push( {
-			x : w / 2 + (this.borderRadius + 20) * Math.cos(theta),
-			y : w / 2 - (this.borderRadius + 20) * Math.sin(theta)
+			x : w / 2 + (this.borderRadius + xTextOffset) * costheta,
+			y : w / 2 - (this.borderRadius + yTextOffset) * sintheta
 		});
 		lightColors.push('black');
 	}

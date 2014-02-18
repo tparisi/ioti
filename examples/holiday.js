@@ -71,13 +71,13 @@ holiday.onWindowResize = function(event) {
 	var t = holiday.colorCubeElement.offsetTop;
 	
 
-	dim += 120;
+	dim += 160;
 	holiday.canvasElement.width = dim;
 	holiday.canvasElement.height = dim;
 	holiday.canvasDiv.style.width = dim + "px";
 	holiday.canvasDiv.style.height = dim + "px";
-	holiday.canvasDiv.style.left = l - 60 + "px";
-	holiday.canvasDiv.style.top = t - 60 + "px";
+	holiday.canvasDiv.style.left = l - 80 + "px";
+	holiday.canvasDiv.style.top = t - 80 + "px";
 	
 	holiday.lightCircleRadius = dim / 2 - 40;
 	if (holiday.lightCircle) {
