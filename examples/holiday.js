@@ -4,6 +4,7 @@ holiday = {
 
 holiday.lightCircleRadius = 0;
 holiday.currentLight = -1;
+holiday.NUM_LIGHTS = 50;
 
 holiday.build = function(element, canvasDiv, canvasElement) {
 
@@ -16,8 +17,12 @@ holiday.build = function(element, canvasDiv, canvasElement) {
 	holiday.swatchElement = document.getElementById("swatch");
 	holiday.lightElement = document.getElementById("light");
 	holiday.statusElement = document.getElementById("status");
+	holiday.lightValuesElement = document.getElementById("lightValues");
 
 	holiday.statusElement.innerHTML += "initializing layout...<br>";
+
+	holiday.initLightValues();
+	holiday.updateColors();
 	
 	document.addEventListener('mousedown', function(event) { holiday.lightCircle.onMouseDown(event); }, false );
 	document.addEventListener('mouseup',  function(event) { holiday.lightCircle.onMouseUp(event); }, false );
@@ -37,6 +42,16 @@ holiday.build = function(element, canvasDiv, canvasElement) {
 	holiday.statusElement.innerHTML = "";
 }
 
+holiday.initLightValues = function() {
+	var values = new Array(holiday.NUM_LIGHTS);
+	var i, len = values.length;
+	for (i = 0; i < len; i++) {
+		values[i] = { r: 0, g: 0, b: 0};
+	}
+	
+	holiday.lightValues = values;
+}
+
 // color handling
 holiday.currentColor = null;
 
@@ -47,19 +62,38 @@ holiday.handleColor = function(color) {
 
 holiday.setColor = function(color) {
 	if (color) {
+		if (holiday.currentLight != -1) {
+			holiday.lightValues[holiday.currentLight] = color;
+			holiday.updateColors();
+		}
 		color = rgbToCSS(color);
 		holiday.swatchElement.style.backgroundColor = color;
 		holiday.lightCircle.setColor(color);
 	}
-//	console.log("setColor:" + color.r + "," + color.g + "," + color.b);	
 }
 
+holiday.updateColors = function() {
+	var elt = holiday.lightValuesElement;
+	elt.innerHTML = "";
+	
+	var i, len = holiday.lightValues.length;
+	for (i = 0; i < len; i++) {
+		var color = holiday.lightValues[i];
+		var istr = i.toString();
+		istr += (istr.length == 1) ? ":  " : ": ";
+		var colorval = color.r + "," + color.g + "," + color.b + "<br>";
+		elt.innerHTML += (istr + colorval);
+	}
+}
+
+// light handling
 holiday.setLight = function(lightIndex) {
 	holiday.currentLight = lightIndex;
 	if (holiday.currentLight != -1) {
 		holiday.lightElement.innerHTML = holiday.currentLight;
 	}
 }
+
 
 // event handling
 holiday.onWindowResize = function(event) {
