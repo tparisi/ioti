@@ -2,6 +2,7 @@ holiday = {
 		
 };
 
+holiday.currentDevice = 0;
 holiday.lightCircleRadius = 0;
 holiday.currentLight = -1;
 holiday.NUM_LIGHTS = 50;
@@ -150,15 +151,17 @@ holiday.run = function() {
 }
 
 // file serialization and device upload
-holiday.DATA_FILE = 'holiday.json';
+holiday.DATA_FILE = 'holiday%d.json';
 holiday.PHP_FILE = 'holiday.php';
 holiday.PHP_SAVE_ACTION = 'action=save';
 holiday.PHP_UPLOAD_ACTION = 'action=upload';
+holiday.PHP_DEVICE_ARG = 'device=';
 holiday.PHP_TIMESTAMP_ARG = 'time=';
 
 holiday.load = function() {
     var xhr = new XMLHttpRequest();
-    var path = holiday.DATA_FILE;
+    var path = holiday.DATA_FILE.replace(/%d/, holiday.currentDevice);
+    path+= ("?time=" + Date.now());
     xhr.open('GET', path, true);
 
     xhr.addEventListener( 'load', function ( event ) {
@@ -198,8 +201,10 @@ holiday.save = function() {
 		}
 	};
 	
+	var url = holiday.PHP_FILE + "?" + holiday.PHP_SAVE_ACTION;
+	var device = holiday.PHP_DEVICE_ARG + holiday.currentDevice;
 	var timestamp = holiday.PHP_TIMESTAMP_ARG + Date.now();
-	var url = holiday.PHP_FILE + "?" + holiday.PHP_SAVE_ACTION + "&" + timestamp;
+	url = [url, device, timestamp].join("&");
 	var saveData = $.ajax({
 	      type: 'POST',
 	      url: url,
