@@ -91,7 +91,8 @@ holiday.setLights = function(lights) {
 	holiday.updateColors();
 	var i, len = holiday.lightValues.length;
 	for (i = 0; i < len; i++) {
-		var color = rgbToCSS(holiday.lightValues[i]);
+		var color = holiday.lightValues[i];
+		var color = rgbToCSS(color);
 		if (i == 0)
 			holiday.swatchElement.style.backgroundColor = color;
 		holiday.lightCircle.setLightColor(i, color);
@@ -151,6 +152,8 @@ holiday.run = function() {
 // file serialization and device upload
 holiday.DATA_FILE = 'holiday.json';
 holiday.PHP_FILE = 'holiday.php';
+holiday.PHP_SAVE_ACTION = 'action=save';
+holiday.PHP_TIMESTAMP_ARG = 'time=';
 
 holiday.load = function() {
     var xhr = new XMLHttpRequest();
@@ -194,14 +197,14 @@ holiday.save = function() {
 		}
 	};
 	
-	var txt = JSON.stringify(data);
-	
+	var timestamp = holiday.PHP_TIMESTAMP_ARG + Date.now();
+	var url = [ holiday.PHP_FILE, holiday.PHP_SAVE_ACTION, timestamp].join("?");
 	var saveData = $.ajax({
 	      type: 'POST',
-	      url: holiday.PHP_FILE + "?action=save",
+	      url: url,
 	      data: data,
 	      dataType: "text",
-	      success: function(result) { console.log(result); alert("Save success:" + result.responseText) },
+	      success: function(result) { console.log(result); },
 	      error: function(err) { console.log(err); alert("Save error: " + err.status); }
 	});	
 }
@@ -210,4 +213,13 @@ holiday.upload = function() {
 	//
 }
 
+holiday.clear = function() {
+	var lights = [];
+	var i;
+	for (i = 0; i < holiday.NUM_LIGHTS; i++) {
+		lights.push({ r: 0, g: 0, b: 0});
+	}
+	
+	holiday.setLights(lights);
+}
 

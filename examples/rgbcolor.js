@@ -7,9 +7,9 @@ hexToRGB = function(color) {
 }
 
 rgbToCSS = function(color) {
-	var r = color.r.toString(16);
-	var g = color.g.toString(16);
-	var b = color.b.toString(16);
+	var r = parseInt(color.r).toString(16);
+	var g = parseInt(color.g).toString(16);
+	var b = parseInt(color.b).toString(16);
     if (r.length == 1) r = '0' + r;
     if (g.length == 1) g = '0' + g;
     if (b.length == 1) b = '0' + b;
