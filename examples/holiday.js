@@ -86,6 +86,20 @@ holiday.updateColors = function() {
 	}
 }
 
+holiday.setLights = function(lights) {
+	holiday.lightValues = lights;
+	holiday.updateColors();
+	var i, len = holiday.lightValues.length;
+	for (i = 0; i < len; i++) {
+		var color = rgbToCSS(holiday.lightValues[i]);
+		if (i == 0)
+			holiday.swatchElement.style.backgroundColor = color;
+		holiday.lightCircle.setLightColor(i, color);
+	}
+	
+	holiday.lightCircle.setLight(0);
+}
+
 // light handling
 holiday.setLight = function(lightIndex) {
 	holiday.currentLight = lightIndex;
@@ -133,3 +147,52 @@ holiday.run = function() {
 	holiday.colorCube.run();
 	holiday.lightCircle.run();
 }
+
+// file serialization and device upload
+holiday.DATA_FILE = 'holiday.json';
+holiday.PHP_FILE = 'holiday.php';
+
+holiday.load = function() {
+    var xhr = new XMLHttpRequest();
+    var path = holiday.DATA_FILE;
+    xhr.open('GET', path, true);
+
+    xhr.addEventListener( 'load', function ( event ) {
+    	if (xhr.status < 400) {
+    		holiday.onFileLoaded(path, xhr.responseText);
+    	}
+    	else {
+        	holiday.onFileError(xhr.status);
+    	}
+    }, false );
+    xhr.addEventListener( 'error', function ( event ) {
+    	holiday.onFileError(xhr.status);
+    }, false );
+    xhr.send(null);
+}
+
+holiday.onFileLoaded = function(path, text) {
+	// alert("File loaded: " + text);
+	var data = JSON.parse(text);
+	for (propS in data) {
+		var setup = data[propS];
+		for (propF in setup) {
+			var frame = setup[propF];
+			holiday.setLights(frame);
+		}
+	}
+}
+
+holiday.onFileError = function(status) {
+	alert("File error: " + status);
+}
+
+holiday.save = function() {
+	holiday.save();
+}
+
+holiday.upload = function() {
+	holiday.upload();
+}
+
+

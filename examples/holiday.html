@@ -73,6 +73,15 @@ body {
 	border:1px dotted;
 }
 
+#actions {
+	position:absolute;
+	right:0px;
+	top:110px;
+	width:200px;
+	font-size:12px;
+}
+
+
 </style>
 <script>
 $(document).ready(function(){
@@ -83,6 +92,18 @@ $(document).ready(function(){
 	holiday.build(container, canvasDiv, canvas);
 	holiday.run();
 });
+
+function load() {
+	holiday.load();
+}
+
+function save() {
+	holiday.save();
+}
+
+function upload() {
+	holiday.upload();
+}
 
 </script>
 </head>
@@ -105,6 +126,11 @@ $(document).ready(function(){
 <div id="lights">
 <div id="lightValues">
 </div>
+</div>
+<div id="actions">
+	<input type="button" value="Load" onclick="load();"></input>
+	<input type="button" value="Save" onclick="save();"></input>
+	<input type="button" value="Upload" onclick="upload();"></input>
 </div>
 </body>
 </html>

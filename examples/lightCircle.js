@@ -11,7 +11,7 @@ LightCircle = function(element, borderRadius) {
 	var that = this;
 
 	this.borderRadius = borderRadius ? borderRadius : LightCircle.DEFAULT_BORDER_RADIUS;
-	this.initControls();
+	this.initControls(true);
 }
 
 LightCircle.prototype = new Object;
@@ -24,7 +24,7 @@ LightCircle.LIGHT_BORDER_RADIUS = 10;
 LightCircle.NUM_LIGHTS = 50;
 LightCircle.AUTO_ADVANCE = true;
 
-LightCircle.prototype.initControls = function() {
+LightCircle.prototype.initControls = function(initColors) {
 
 	var w = this.canvas.width;
 	var h = this.canvas.height;
@@ -43,12 +43,14 @@ LightCircle.prototype.initControls = function() {
 			x : w / 2 + (this.borderRadius + xTextOffset) * costheta,
 			y : w / 2 - (this.borderRadius + yTextOffset) * sintheta
 		});
-		lightColors.push('black');
+		if (initColors)
+			lightColors.push('black');
 	}
 	
 	this.lightPositions = positions;
 	this.textPositions = textPositions;
-	this.lightColors = lightColors;
+	if (initColors)
+		this.lightColors = lightColors;
 }
 
 LightCircle.prototype.runLoop = function() {
@@ -116,12 +118,21 @@ LightCircle.prototype.setColor = function(color) {
 
 LightCircle.prototype.setBorderRadius = function(borderRadius) {
 	this.borderRadius = borderRadius;
-	this.initControls();
+	this.initControls(false);
 }
 
 LightCircle.prototype.setLight = function(index) {
 	this.currentLight = index;
 	holiday.setLight(index);
+}
+
+LightCircle.prototype.setLightColor = function(index, color) {
+	if (index < 0 || index >= LightCircle.NUM_LIGHTS) {
+		console.warn("Light index out of range: ", index);
+		return;
+	}
+	
+	this.lightColors[index] = color;
 }
 
 LightCircle.prototype.nextLight = function() {
