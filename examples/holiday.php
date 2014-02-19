@@ -4,7 +4,7 @@
 //print_r($_POST);
 if ($_GET['action'] == 'save') {
 	$device = $_GET['device'];
-	$HOLIDAY_DATA_FILE = "holiday{$device}.json";
+	$HOLIDAY_DATA_FILE = "../data/holiday{$device}.json";
 	echo $HOLIDAY_DATA_FILE . "\n";
 	print_r($_GET);
 	$json = json_encode($_POST);

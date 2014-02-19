@@ -5,22 +5,28 @@
   content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link href='./css/fonts.css' rel='stylesheet' type='text/css'>
+<!--  libraries -->
 <script src="../libs/jquery-1.9.1/jquery-1.9.1.js"></script>
 <script src="../libs/parsecss/jquery.parsecss.js" ></script>
 <script src="../libs/vizi/vizi.js" ></script>
+<script src="../libs/leapjs/leap.js"></script>
+<!--  sources -->
 <script src="./holiday.js" ></script>
 <script src="./colorCube.js" ></script>
 <script src="./lightCircle.js" ></script>
 <script src="./rgbColor.js" ></script>
+<script src="./leapController.js" ></script>
 <title>Holiday</title>
 
 <style>
 body {
 	background-color:#fdf5e8; /*duron paperwhite*/
+	/*background-color:black;*/
 }
 
 * {
 	font-family: 'PT Sans', sans-serif;
+	/*color:#fdf5e8; /*duron paperwhite*/
 }
 
 #info {
@@ -131,11 +137,11 @@ function clearLights() {
 <div id="lightValues">
 </div>
 </div>
-<div id="actions">
-	<input type="button" value="Load" onclick="load();"></input>
-	<input type="button" value="Save" onclick="save();"></input>
-	<input type="button" value="Upload" onclick="upload();"></input>
-	<input type="button" value="Clear" onclick="clearLights();"></input>
+<div id="actions" style="color:black;">
+	<input type="button" value="Load" onclick="load();" style="color:black;"></input>
+	<input type="button" value="Save" onclick="save();" style="color:black;"></input>
+	<input type="button" value="Upload" onclick="upload();" style="color:black;"></input>
+	<input type="button" value="Clear" onclick="clearLights();" style="color:black;"></input>
 </div>
 </body>
 </html>

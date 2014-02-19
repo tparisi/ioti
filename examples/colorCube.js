@@ -1,14 +1,24 @@
 ColorCube = function(element) {
 	this.app = new Vizi.Application({ container : element });
 	var that = this;
+	
 	element.addEventListener('mousedown', function(event) { that.onMouseDown(event); }, false );
 	element.addEventListener('mouseup', function(event) { that.onMouseUp(event); }, false );
+
+	this.domElement = element;
 	
 	this.initScene();
 	this.createCubes();	
 	
 	this.dragging = false;
 	this.currentColor = null;
+	
+	this.lastLeapX = 0;
+	this.lastLeapY = 0;
+	this.lastLeapZ = 0;
+	this.lastLeapPitch = 0;
+	this.lastLeapYaw = 0;
+	this.lastLeapRoll = 0;
 }
 
 ColorCube.prototype = new Object;
@@ -26,7 +36,9 @@ ColorCube.prototype.initScene = function() {
 	var ob = 4 * Math.sqrt(2);
 	camera1.position.set(ob, ob, ob);
 	this.app.addObject(controller);
-		
+	
+	this.controllerScript = controllerScript;
+	
 	this.scene = new Vizi.Object;
 	this.app.addObject(this.scene);
 
@@ -85,6 +97,77 @@ ColorCube.prototype.setColor = function() {
 	
 	holiday.setColor(color);
 }
+
+ColorCube.prototype.handleLeapRotationChanged = function(pitch, yaw, roll) {
+    var str = "ColorCube.handleLeapRotationChanged:  " +
+    " Pitch: " + pitch +
+    " Yaw: " + yaw +
+    " Roll: " + roll
+    "";
+
+    //console.log(str);
+
+    var dp = pitch - this.lastLeapPitch;
+    var dy = yaw - this.lastLeapYaw;
+    var dr = roll - this.lastLeapRoll;
+
+    /*if (Math.abs(dp) > Math.abs(dy))
+    	dy = 0;
+    else
+    */	dp = 0;
+    
+    if (dp > 0)
+    	this.controllerScript.controls.rotateUp(Math.PI / 60);
+    else if (dp < 0)
+    	this.controllerScript.controls.rotateDown(Math.PI / 60);
+
+    if (dr > 0)
+    	this.controllerScript.controls.rotateLeft(Math.PI / 60);
+    else if (dr < 0)
+    	this.controllerScript.controls.rotateRight(Math.PI / 60);
+    
+	this.lastLeapPitch = pitch;
+	this.lastLeapYaw = yaw;
+	this.lastLeapRoll = roll;
+
+}
+
+ColorCube.prototype.handleLeapPositionChanged = function(x, y, z) {
+	return;
+	
+    var str = "ColorCube.handleLeapPositionChanged:  " +
+    " X: " + x +
+    " Y: " + y +
+    " Z: " + z
+    "";
+
+    //console.log(str);
+
+    var dx = x - this.lastLeapX;
+    var dy = y - this.lastLeapY;
+    var dz = z - this.lastLeapZ;
+
+    if (Math.abs(dx) > Math.abs(dz))
+    	dz = 0;
+    else
+    	dx = 0;
+    
+    if (dz > 0)
+    	this.controllerScript.controls.rotateUp(Math.PI / 60);
+    else if (dz < 0)
+    	this.controllerScript.controls.rotateDown(Math.PI / 60);
+
+    if (dx > 0)
+    	this.controllerScript.controls.rotateLeft(Math.PI / 60);
+    else if (dx < 0)
+    	this.controllerScript.controls.rotateRight(Math.PI / 60);
+    
+	this.lastLeapX = x;
+	this.lastLeapY = y;
+	this.lastLeapZ = z;
+
+}
+
 
 ColorCube.USE_WIREFRAME_FOR_CUBE = true;
 ColorCube.SCALE_CUBE_ON_ROLLOVER = true;

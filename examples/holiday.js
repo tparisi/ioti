@@ -38,6 +38,10 @@ holiday.build = function(element, canvasDiv, canvasElement) {
 	holiday.colorCube = new ColorCube(element);
 	holiday.statusElement.innerHTML += "initializing light controls...<br>";
 	holiday.lightCircle = new LightCircle(canvasElement, holiday.lightCircleRadius);
+	holiday.statusElement.innerHTML += "initializing leap controller...<br>";
+	holiday.leapController = new LeapController();
+	holiday.leapController.rotationChangedCallback = holiday.onLeapRotationChanged;
+	holiday.leapController.positionChangedCallback = holiday.onLeapPositionChanged;
 	holiday.statusElement.innerHTML += "done.";
 	holiday.setLight(0);
 	holiday.statusElement.innerHTML = "";
@@ -144,14 +148,23 @@ holiday.onWindowResize = function(event) {
 	}
 }
 
+holiday.onLeapRotationChanged = function(pitch, yaw, roll) {
+    holiday.colorCube.handleLeapRotationChanged(pitch, yaw, roll);
+}
+
+holiday.onLeapPositionChanged = function(x, y, z) {
+    holiday.colorCube.handleLeapPositionChanged(x, y, z);
+}
+
 // app run loop(s)
 holiday.run = function() {
 	holiday.colorCube.run();
 	holiday.lightCircle.run();
+	holiday.leapController.run();
 }
 
 // file serialization and device upload
-holiday.DATA_FILE = 'holiday%d.json';
+holiday.DATA_FILE = '../data/holiday%d.json';
 holiday.PHP_FILE = 'holiday.php';
 holiday.PHP_SAVE_ACTION = 'action=save';
 holiday.PHP_UPLOAD_ACTION = 'action=upload';
