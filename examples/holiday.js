@@ -188,11 +188,19 @@ holiday.onFileError = function(status) {
 }
 
 holiday.save = function() {
-	holiday.save();
+	var data = {
+		"_h_0" : {
+			"_f_0" : holiday.lightValues
+		}
+	};
+	
+	var txt = JSON.stringify(data);
+	
+	
 }
 
 holiday.upload = function() {
-	holiday.upload();
+	//
 }
 
 
