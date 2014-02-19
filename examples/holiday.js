@@ -196,7 +196,14 @@ holiday.save = function() {
 	
 	var txt = JSON.stringify(data);
 	
-	
+	var saveData = $.ajax({
+	      type: 'POST',
+	      url: holiday.PHP_FILE + "?action=save",
+	      data: data,
+	      dataType: "text",
+	      success: function(result) { console.log(result); alert("Save success:" + result.responseText) },
+	      error: function(err) { console.log(err); alert("Save error: " + err.status); }
+	});	
 }
 
 holiday.upload = function() {
