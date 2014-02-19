@@ -153,6 +153,7 @@ holiday.run = function() {
 holiday.DATA_FILE = 'holiday.json';
 holiday.PHP_FILE = 'holiday.php';
 holiday.PHP_SAVE_ACTION = 'action=save';
+holiday.PHP_UPLOAD_ACTION = 'action=upload';
 holiday.PHP_TIMESTAMP_ARG = 'time=';
 
 holiday.load = function() {
@@ -198,19 +199,34 @@ holiday.save = function() {
 	};
 	
 	var timestamp = holiday.PHP_TIMESTAMP_ARG + Date.now();
-	var url = [ holiday.PHP_FILE, holiday.PHP_SAVE_ACTION, timestamp].join("?");
+	var url = holiday.PHP_FILE + "?" + holiday.PHP_SAVE_ACTION + "&" + timestamp;
 	var saveData = $.ajax({
 	      type: 'POST',
 	      url: url,
 	      data: data,
 	      dataType: "text",
-	      success: function(result) { console.log(result); },
+	      success: function(result) { console.log(result); /*console.log(JSON.parse(result));*/ },
 	      error: function(err) { console.log(err); alert("Save error: " + err.status); }
 	});	
 }
 
 holiday.upload = function() {
-	//
+	var data = {
+			"_h_0" : {
+				"_f_0" : holiday.lightValues
+			}
+		};
+		
+		var timestamp = holiday.PHP_TIMESTAMP_ARG + Date.now();
+		var url = holiday.PHP_FILE + "?" + holiday.PHP_UPLOAD_ACTION + "&" + timestamp;
+		var saveData = $.ajax({
+		      type: 'POST',
+		      url: url,
+		      data: data,
+		      dataType: "text",
+		      success: function(result) { console.log(result); /*console.log(JSON.parse(result));*/ },
+		      error: function(err) { console.log(err); alert("Save error: " + err.status); }
+		});	
 }
 
 holiday.clear = function() {
