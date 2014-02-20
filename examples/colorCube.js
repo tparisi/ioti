@@ -113,20 +113,20 @@ ColorCube.prototype.handleLeapRotationChanged = function(pitch, yaw, roll) {
     var dy = yaw - this.lastLeapYaw;
     var dr = roll - this.lastLeapRoll;
 
-    /*if (Math.abs(dp) > Math.abs(dy))
+    if (Math.abs(dp) > Math.abs(dy))
     	dy = 0;
     else
-    */	dp = 0;
+    	dp = 0;
     
     if (dp > 0)
-    	this.controllerScript.controls.rotateUp(Math.PI / 60);
+    	this.controllerScript.controls.rotateUp(Math.PI / 30);
     else if (dp < 0)
-    	this.controllerScript.controls.rotateDown(Math.PI / 60);
+    	this.controllerScript.controls.rotateDown(Math.PI / 30);
 
     if (dr > 0)
-    	this.controllerScript.controls.rotateLeft(Math.PI / 60);
+    	this.controllerScript.controls.rotateLeft(Math.PI / 30);
     else if (dr < 0)
-    	this.controllerScript.controls.rotateRight(Math.PI / 60);
+    	this.controllerScript.controls.rotateRight(Math.PI / 30);
     
 	this.lastLeapPitch = pitch;
 	this.lastLeapYaw = yaw;

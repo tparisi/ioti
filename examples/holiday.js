@@ -107,6 +107,16 @@ holiday.setLights = function(lights) {
 	holiday.lightCircle.setLight(0);
 }
 
+holiday.updateLights = function() {
+	holiday.updateColors();
+	var i, len = holiday.lightValues.length;
+	for (i = 0; i < len; i++) {
+		var color = holiday.lightValues[i];
+		var color = rgbToCSS(color);
+		holiday.lightCircle.setLightColor(i, color);
+	}
+}
+
 // light handling
 holiday.setLight = function(lightIndex) {
 	holiday.currentLight = lightIndex;
