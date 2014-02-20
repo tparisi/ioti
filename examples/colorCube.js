@@ -99,6 +99,8 @@ ColorCube.prototype.setColor = function() {
 }
 
 ColorCube.prototype.handleLeapRotationChanged = function(pitch, yaw, roll) {
+	return;
+	
     var str = "ColorCube.handleLeapRotationChanged:  " +
     " Pitch: " + pitch +
     " Yaw: " + yaw +
@@ -168,25 +170,33 @@ ColorCube.prototype.handleLeapPositionChanged = function(x, y, z) {
 
 }
 
-ColorCube.prototype.handleLeapSwipe = function(direction) {
+ColorCube.prototype.handleLeapSwipe = function(direction, speed) {
     
 	var x = direction[0], y = direction[1];
 
-	/*if (x > y)
+	var absx = Math.abs(x);
+	var absy = Math.abs(y);
+	if  (absx > absy)
 		y = 0;
 	else
 		x = 0;
-	*/
+	
+	speed /= 500;
+	if (speed < 0)
+		speed = 1;
+	if (speed > 2)
+		speed = 2;
 	
     if (x > 0)
-    	this.controllerScript.controls.rotateLeft(Math.PI / 60);
+    	this.controllerScript.controls.rotateLeft(Math.PI / 60 * speed);
     else if (x < 0)
-    	this.controllerScript.controls.rotateRight(Math.PI / 60);
+    	this.controllerScript.controls.rotateRight(Math.PI / 60 * speed);
 
+	
     if (y < 0)
-    	this.controllerScript.controls.rotateUp(Math.PI / 60);
+    	this.controllerScript.controls.rotateUp(Math.PI / 60 * speed);
     else if (y > 0)
-    	this.controllerScript.controls.rotateDown(Math.PI / 60);
+    	this.controllerScript.controls.rotateDown(Math.PI / 60 * speed);
     
 }
 

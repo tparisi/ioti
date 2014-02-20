@@ -157,8 +157,8 @@ holiday.onLeapPositionChanged = function(x, y, z) {
     holiday.colorCube.handleLeapPositionChanged(x, y, z);
 }
 
-holiday.onLeapSwipe = function(direction) {
-    holiday.colorCube.handleLeapSwipe(direction);
+holiday.onLeapSwipe = function(direction, speed) {
+    holiday.colorCube.handleLeapSwipe(direction, speed);
 }
 
 // app run loop(s)
