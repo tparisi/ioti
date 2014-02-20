@@ -66,6 +66,16 @@ LeapController.prototype.handleFrame = function(frame) {
     var rotationChanged = false,
     	positionChanged = false;
     
+    for (var g in frame.gestures) {
+    	if (frame.gestures[g].direction) {
+    		console.log (frame.gestures[g].direction);
+	    	if (this.swipeCallback)
+	    		this.swipeCallback(frame.gestures[g].direction);
+    	}
+    }
+    
+    return;
+    
     for (var i in frame.handsMap) {
       var hand = frame.handsMap[i];
       var pitch = hand.pitch();

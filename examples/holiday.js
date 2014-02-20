@@ -42,6 +42,7 @@ holiday.build = function(element, canvasDiv, canvasElement) {
 	holiday.leapController = new LeapController();
 	holiday.leapController.rotationChangedCallback = holiday.onLeapRotationChanged;
 	holiday.leapController.positionChangedCallback = holiday.onLeapPositionChanged;
+	holiday.leapController.swipeCallback = holiday.onLeapSwipe;
 	holiday.statusElement.innerHTML += "done.";
 	holiday.setLight(0);
 	holiday.statusElement.innerHTML = "";
@@ -154,6 +155,10 @@ holiday.onLeapRotationChanged = function(pitch, yaw, roll) {
 
 holiday.onLeapPositionChanged = function(x, y, z) {
     holiday.colorCube.handleLeapPositionChanged(x, y, z);
+}
+
+holiday.onLeapSwipe = function(direction) {
+    holiday.colorCube.handleLeapSwipe(direction);
 }
 
 // app run loop(s)

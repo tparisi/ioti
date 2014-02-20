@@ -168,6 +168,27 @@ ColorCube.prototype.handleLeapPositionChanged = function(x, y, z) {
 
 }
 
+ColorCube.prototype.handleLeapSwipe = function(direction) {
+    
+	var x = direction[0], y = direction[1];
+
+	/*if (x > y)
+		y = 0;
+	else
+		x = 0;
+	*/
+	
+    if (x > 0)
+    	this.controllerScript.controls.rotateLeft(Math.PI / 60);
+    else if (x < 0)
+    	this.controllerScript.controls.rotateRight(Math.PI / 60);
+
+    if (y < 0)
+    	this.controllerScript.controls.rotateUp(Math.PI / 60);
+    else if (y > 0)
+    	this.controllerScript.controls.rotateDown(Math.PI / 60);
+    
+}
 
 ColorCube.USE_WIREFRAME_FOR_CUBE = true;
 ColorCube.SCALE_CUBE_ON_ROLLOVER = true;
