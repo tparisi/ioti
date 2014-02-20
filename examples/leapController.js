@@ -65,12 +65,23 @@ LeapController.prototype.handleFrame = function(frame) {
     
     var rotationChanged = false,
     	positionChanged = false;
-    
-    if (frame.gestures.length) {
-    	if (frame.gestures[0].direction) {
-//    		console.log (frame.gestures[0].direction);
-	    	if (this.swipeCallback)
-	    		this.swipeCallback(frame.gestures[0].direction, frame.gestures[0].speed);
+
+    for (g in frame.gestures) {
+    	var gesture = frame.gestures[g];
+    	if (gesture.type == "swipe") {
+	    	if (gesture.direction) {
+	//    		console.log (frame.gestures[0].direction);
+		    	if (this.swipeCallback)
+		    		this.swipeCallback(gesture.direction, gesture.speed);
+	    	}
+    	}
+    	else if (gesture.type == "screenTap") {
+    		if (gesture.position) {
+        		console.log("Screen tap! ", gesture.position);
+    		}
+    	}
+    	else {
+    		console.log("Got gesture, type = ", gesture.type);
     	}
     }
     
