@@ -52,7 +52,7 @@ holiday.initLightValues = function() {
 	var values = new Array(holiday.NUM_LIGHTS);
 	var i, len = values.length;
 	for (i = 0; i < len; i++) {
-		values[i] = { r: 0, g: 0, b: 0};
+		values[i] = new THREE.Color(0, 0, 0);
 	}
 	
 	holiday.lightValues = values;
@@ -69,7 +69,7 @@ holiday.handleColor = function(color) {
 holiday.setColor = function(color) {
 	if (color) {
 		if (holiday.currentLight != -1) {
-			holiday.lightValues[holiday.currentLight] = color;
+			holiday.lightValues[holiday.currentLight].setRGB(color.r, color.g, color.b);
 			holiday.updateColors();
 		}
 		color = rgbToCSS(color);
@@ -93,7 +93,12 @@ holiday.updateColors = function() {
 }
 
 holiday.setLights = function(lights) {
-	holiday.lightValues = lights;
+	var i, len = lights.length;
+	for (i = 0; i < len; i++) {
+		var light = lights[i];
+		holiday.lightValues[i].setRGB(light.r, light.g, light.b);
+	}
+	holiday.updateLights();
 	holiday.updateColors();
 	var i, len = holiday.lightValues.length;
 	for (i = 0; i < len; i++) {
@@ -214,6 +219,7 @@ holiday.onFileLoaded = function(path, text) {
 		for (propF in setup) {
 			var frame = setup[propF];
 			holiday.setLights(frame);
+			break;
 		}
 	}
 }
@@ -222,10 +228,20 @@ holiday.onFileError = function(status) {
 	alert("File error: " + status);
 }
 
+holiday.lightsToJSON = function() {
+	var lights = [];
+	for (i = 0; i < holiday.NUM_LIGHTS; i++) {
+		var color = holiday.lightValues[i];
+		lights.push({ r : color.r, g : color.g, b : color.b });
+	}
+	
+	return lights;
+}
+
 holiday.save = function() {
 	var data = {
 		"_h_0" : {
-			"_f_0" : holiday.lightValues
+			"_f_0" : holiday.lightsToJSON()
 		}
 	};
 	
@@ -246,7 +262,7 @@ holiday.save = function() {
 holiday.upload = function() {
 	var data = {
 			"_h_0" : {
-				"_f_0" : holiday.lightValues
+				"_f_0" : holiday.lightsToJSON()
 			}
 		};
 		
@@ -263,12 +279,12 @@ holiday.upload = function() {
 }
 
 holiday.clear = function() {
-	var lights = [];
+	
 	var i;
 	for (i = 0; i < holiday.NUM_LIGHTS; i++) {
-		lights.push({ r: 0, g: 0, b: 0});
+		holiday.lightValues[i].setRGB(0, 0, 0);
 	}
 	
-	holiday.setLights(lights);
+	holiday.updateLights();
 }
 
