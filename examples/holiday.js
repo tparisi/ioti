@@ -171,10 +171,21 @@ holiday.runLoop = function() {
 	requestAnimationFrame(holiday.runLoop);
 	
 	// update any animations
-	KF.update();
+	if (holiday.animations) {
+		holiday.animations.update();
 	
-	if (holiday.lightTween && holiday.lightTween.running)
-		holiday.updateLights();
+		if (holiday.lightTween && holiday.lightTween.running)
+			holiday.updateLights();
+	}
+	
+	// update any animations
+	if (holiday.programs) {
+		holiday.programs.update();
+	
+		if (holiday.lightProgram && holiday.lightProgram.running)
+			holiday.updateLights();
+	}
+	
 }
 
 holiday.run = function() {
@@ -186,8 +197,10 @@ holiday.run = function() {
 }
 
 holiday.playAnimation = function() {
+	if (!holiday.animations) {
+		holiday.animations = KF;
+	}
 	holiday.lightTween = LightTween.createCycleTween(holiday.lightValues);
-	KF.add(holiday.lightTween);
 	holiday.lightTween.start();
 }
 
@@ -196,8 +209,23 @@ holiday.stopAnimation = function() {
 		return;
 	
 	holiday.lightTween.stop();
-	KF.remove(holiday.lightTween);
 	holiday.lightTween = null;
+}
+
+holiday.runProgram = function() {
+	if (!holiday.programs) {
+		holiday.programs = LightPrograms;
+	}
+	holiday.lightProgram = new LightPrograms.Cycle(holiday.lightValues);
+	holiday.lightProgram.run();
+}
+
+holiday.stopProgram = function() {
+	if (!holiday.lightProgram)
+		return;
+	
+	holiday.lightProgram.stop();
+	holiday.lightProgram = null;
 }
 
 
