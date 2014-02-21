@@ -177,11 +177,30 @@ holiday.onLeapSwipe = function(direction, speed) {
 }
 
 // app run loop(s)
+holiday.runLoop = function() {
+	requestAnimationFrame(holiday.runLoop);
+	
+	// update any animations
+	KF.update();
+	
+	if (holiday.lightTween && holiday.lightTween.running)
+		holiday.updateLights();
+}
+
 holiday.run = function() {
 	holiday.colorCube.run();
 	holiday.lightCircle.run();
 	holiday.leapController.run();
+	
+	holiday.runLoop();
 }
+
+holiday.playAnimation = function() {
+	holiday.lightTween = LightTween.createCycleTween(holiday.lightValues);
+	KF.add(holiday.lightTween);
+	holiday.lightTween.start();
+}
+
 
 // file serialization and device upload
 holiday.DATA_FILE = '../data/holiday%d.json';

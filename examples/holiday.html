@@ -10,12 +10,14 @@
 <script src="../libs/parsecss/jquery.parsecss.js" ></script>
 <script src="../libs/vizi/vizi.js" ></script>
 <script src="../libs/leapjs/leap.js"></script>
+<script src="../libs/keyframe.js/keyframe.js"></script>
 <!--  sources -->
 <script src="./holiday.js" ></script>
 <script src="./colorCube.js" ></script>
 <script src="./lightCircle.js" ></script>
 <script src="./rgbColor.js" ></script>
 <script src="./leapController.js" ></script>
+<script src="./animation.js" ></script>
 <title>Holiday</title>
 
 <style>
@@ -115,6 +117,10 @@ function clearLights() {
 	holiday.clear();
 }
 
+function playAnimation() {
+	holiday.playAnimation();
+}
+
 </script>
 </head>
 <body>
@@ -142,6 +148,7 @@ function clearLights() {
 	<input type="button" value="Save" onclick="save();" style="color:black;"></input>
 	<input type="button" value="Upload" onclick="upload();" style="color:black;"></input>
 	<input type="button" value="Clear" onclick="clearLights();" style="color:black;"></input>
+	<input type="button" value="Play" onclick="playAnimation();" style="color:black;"></input>
 </div>
 </body>
 </html>
