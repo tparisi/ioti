@@ -96,20 +96,10 @@ holiday.setLights = function(lights) {
 	var i, len = lights.length;
 	for (i = 0; i < len; i++) {
 		var light = lights[i];
-		holiday.lightValues[i].setRGB(light.r, light.g, light.b);
+		holiday.lightValues[i].setRGB(parseInt(light.r), parseInt(light.g), parseInt(light.b));
 	}
 	holiday.updateLights();
 	holiday.updateColors();
-	var i, len = holiday.lightValues.length;
-	for (i = 0; i < len; i++) {
-		var color = holiday.lightValues[i];
-		var color = rgbToCSS(color);
-		if (i == 0)
-			holiday.swatchElement.style.backgroundColor = color;
-		holiday.lightCircle.setLightColor(i, color);
-	}
-	
-	holiday.lightCircle.setLight(0);
 }
 
 holiday.updateLights = function() {
@@ -201,6 +191,15 @@ holiday.playAnimation = function() {
 	holiday.lightTween.start();
 }
 
+holiday.stopAnimation = function() {
+	if (!holiday.lightTween)
+		return;
+	
+	holiday.lightTween.stop();
+	KF.remove(holiday.lightTween);
+	holiday.lightTween = null;
+}
+
 
 // file serialization and device upload
 holiday.DATA_FILE = '../data/holiday%d.json';
@@ -238,6 +237,7 @@ holiday.onFileLoaded = function(path, text) {
 		for (propF in setup) {
 			var frame = setup[propF];
 			holiday.setLights(frame);
+			holiday.lightCircle.setLight(0);
 			break;
 		}
 	}

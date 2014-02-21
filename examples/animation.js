@@ -81,9 +81,16 @@ LightTween.prototype.interp = function(fract)
 LightTween.prototype.tween = function(hslfrom, hslto, hslout, fract)
 {
 	for (prop in hslfrom) {
-		var range = hslto[prop] - hslfrom[prop];
-		var delta = range * fract;
-		hslout[ prop ] = hslfrom[ prop ] + delta;
+		switch (prop) {
+			case "r" :
+			case "g" :
+			case "b" :
+				var range = hslto[prop] - hslfrom[prop];
+				var delta = range * fract;
+				hslout[ prop ] = hslfrom[ prop ] + delta;
+			break;
+		}
+		
 	}
 }
 
@@ -95,19 +102,20 @@ LightTween.createCycleTween = function(lights) {
 		from[i] = lights[i].clone();
 	}
 	
-	for (i = 0; i < len - 1; i++) {
-		to[i + 1] = lights[i].clone();
+	for (i = 0; i < len; i++) {
+		to[i ] = new THREE.Color;
 	}
 
-	to[0] = lights[len - 1].clone();
+//	to[0] = lights[len - 1].clone();
 	
 	return new LightTween({
 		from : from,
 		to : to,
 		target : lights,
-		loop : true
+		loop : true,
+		easing: TWEEN.Easing.Quadratic.InOut
 	});
 }
 
 // Constants
-LightTween.default_duration = 10000; //ms
+LightTween.default_duration = 5000; //ms
