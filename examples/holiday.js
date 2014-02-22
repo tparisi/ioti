@@ -38,6 +38,8 @@ holiday.build = function(element, canvasDiv, canvasElement) {
 	holiday.colorCube = new ColorCube(element);
 	holiday.statusElement.innerHTML += "initializing light controls...<br>";
 	holiday.lightCircle = new LightCircle(canvasElement, holiday.lightCircleRadius);
+	holiday.statusElement.innerHTML += "connecting to light...<br>";
+	holiday.initDevices();
 	holiday.statusElement.innerHTML += "initializing leap controller...<br>";
 	holiday.leapController = new LeapController();
 	holiday.leapController.rotationChangedCallback = holiday.onLeapRotationChanged;
@@ -58,6 +60,11 @@ holiday.initLightValues = function() {
 	holiday.lightValues = values;
 }
 
+holiday.initDevices = function() {
+	this.device = new Holiday('localhost:8080');
+	this.deviceLights = this.device.fastbulbs;
+}
+
 // color handling
 holiday.currentColor = null;
 
@@ -71,6 +78,7 @@ holiday.setColor = function(color) {
 		if (holiday.currentLight != -1) {
 			holiday.lightValues[holiday.currentLight].setRGB(color.r, color.g, color.b);
 			holiday.updateColors();
+			holiday.updateDeviceColors();
 		}
 		color = rgbToCSS(color);
 		holiday.swatchElement.style.backgroundColor = color;
@@ -90,6 +98,18 @@ holiday.updateColors = function() {
 		var colorval = color.r + "," + color.g + "," + color.b + "<br>";
 		elt.innerHTML += (istr + colorval);
 	}
+}
+
+holiday.updateDeviceColors = function() {
+
+	var i, len = holiday.lightValues.length;
+	for (i = 0; i < len; i++) {
+		var color = holiday.lightValues[i];
+		var hex = rgbToHex(color);
+		this.deviceLights[i] = hex;
+	}
+	this.upload();
+	// this.device.fastlights();
 }
 
 holiday.setLights = function(lights) {
@@ -266,7 +286,7 @@ holiday.onFileLoaded = function(path, text) {
 			var frame = setup[propF];
 			holiday.setLights(frame);
 			holiday.lightCircle.setLight(0);
-			break;
+			holiday.updateDeviceColors();
 		}
 	}
 }
@@ -307,22 +327,19 @@ holiday.save = function() {
 }
 
 holiday.upload = function() {
-	var data = {
-			"_h_0" : {
-				"_f_0" : holiday.lightsToJSON()
-			}
-		};
-		
-		var timestamp = holiday.PHP_TIMESTAMP_ARG + Date.now();
-		var url = holiday.PHP_FILE + "?" + holiday.PHP_UPLOAD_ACTION + "&" + timestamp;
-		var saveData = $.ajax({
-		      type: 'POST',
-		      url: url,
-		      data: data,
-		      dataType: "text",
-		      success: function(result) { console.log(result); /*console.log(JSON.parse(result));*/ },
-		      error: function(err) { console.log(err); alert("Save error: " + err.status); }
-		});	
+	
+	var data = { lights : this.device.fast2json() };
+	// data.lights = '{ "lights": [ "#ff7f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf" ] }';
+	var timestamp = holiday.PHP_TIMESTAMP_ARG + Date.now();
+	var url = holiday.PHP_FILE + "?" + holiday.PHP_UPLOAD_ACTION + "&" + timestamp;
+	var saveData = $.ajax({
+	      type: 'POST',
+	      url: url,
+	      data: data,
+	      dataType: "text",
+	      success: function(result) { console.log(result); /*console.log(JSON.parse(result));*/ },
+	      error: function(err) { console.log(err); alert("Upload error: " + err.status); }
+	});	
 }
 
 holiday.clear = function() {

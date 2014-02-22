@@ -6,6 +6,10 @@ hexToRGB = function(color) {
 	};
 }
 
+rgbToHex = function(color) {
+	return color.r << 16 | color.g << 8 | color.b;
+}
+
 rgbToCSS = function(color) {
 	var r = parseInt(color.r).toString(16);
 	var g = parseInt(color.g).toString(16);
