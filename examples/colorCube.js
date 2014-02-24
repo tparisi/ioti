@@ -4,6 +4,7 @@ ColorCube = function(element) {
 	
 	element.addEventListener('mousedown', function(event) { that.onMouseDown(event); }, false );
 	element.addEventListener('mouseup', function(event) { that.onMouseUp(event); }, false );
+	element.addEventListener('mousemove', function(event) { that.onMouseMove(event); }, false );
 
 	this.domElement = element;
 	
@@ -19,6 +20,7 @@ ColorCube = function(element) {
 	this.lastLeapPitch = 0;
 	this.lastLeapYaw = 0;
 	this.lastLeapRoll = 0;
+	this.lastMouseEvent = null;
 }
 
 ColorCube.prototype = new Object;
@@ -61,6 +63,45 @@ ColorCube.prototype.onMouseDown = function(event) {
 
 ColorCube.prototype.onMouseUp = function(event) {
 	this.dragging = false;
+}
+
+ColorCube.prototype.calcElementOffset = function(offset) {
+
+	offset.left = this.domElement.offsetLeft;
+	offset.top = this.domElement.offsetTop;
+	
+	var parent = this.domElement.offsetParent;
+	while(parent) {
+		offset.left += parent.offsetLeft;
+		offset.top += parent.offsetTop;
+		parent = parent.offsetParent;
+	}
+}
+
+ColorCube.prototype.onMouseMove = function(event) {
+	this.lastMouseEvent = event;
+}
+
+ColorCube.prototype.onKeyTap = function() {
+	console.log("In ColorCube key tap");
+	
+	// hack city - need to make this more rational
+	if (this.lastMouseEvent) {
+		var event = this.lastMouseEvent;
+		
+		var offset = {};
+		this.calcElementOffset(offset);
+		
+		var eltx = event.pageX - offset.left;
+		var elty = event.pageY - offset.top;
+		
+		var evt = { type : event.type, pageX : event.pageX, pageY : event.pageY, 
+		    	elementX : eltx, elementY : elty, button:event.button };
+		
+	    Vizi.PickManager.handleMouseMove(evt);
+		if (this.currentColor)
+			holiday.setColor(this.currentColor);
+	}
 }
 
 // color handling

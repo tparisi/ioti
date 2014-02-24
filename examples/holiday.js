@@ -45,6 +45,8 @@ holiday.build = function(element, canvasDiv, canvasElement) {
 	holiday.leapController.rotationChangedCallback = holiday.onLeapRotationChanged;
 	holiday.leapController.positionChangedCallback = holiday.onLeapPositionChanged;
 	holiday.leapController.swipeCallback = holiday.onLeapSwipe;
+	holiday.leapController.circleCallback = holiday.onLeapCircle;
+	holiday.leapController.keyTapCallback = holiday.onLeapKeyTap;
 	holiday.statusElement.innerHTML += "done.";
 	holiday.setLight(0);
 	holiday.statusElement.innerHTML = "";
@@ -61,8 +63,10 @@ holiday.initLightValues = function() {
 }
 
 holiday.initDevices = function() {
-	this.device = new Holiday('localhost:8080');
-	this.deviceLights = this.device.fastbulbs;
+	holiday.device = new Holiday('localhost:8080');
+	holiday.deviceLights = holiday.device.fastbulbs;
+	holiday.deviceNeedsUpdate = true;
+	holiday.lastDeviceUpdateTime = Date.now();
 }
 
 // color handling
@@ -71,6 +75,8 @@ holiday.currentColor = null;
 holiday.handleColor = function(color) {
 	holiday.currentColor = color;
 	holiday.rgbElement.innerHTML = color.r + "," + color.g + "," + color.b;
+	color = rgbToCSS(color);
+	holiday.swatchElement.style.backgroundColor = color;
 }
 
 holiday.setColor = function(color) {
@@ -78,11 +84,11 @@ holiday.setColor = function(color) {
 		if (holiday.currentLight != -1) {
 			holiday.lightValues[holiday.currentLight].setRGB(color.r, color.g, color.b);
 			holiday.updateColors();
-			holiday.updateDeviceColors();
 		}
 		color = rgbToCSS(color);
 		holiday.swatchElement.style.backgroundColor = color;
 		holiday.lightCircle.setColor(color);
+		holiday.deviceNeedsUpdate = true;
 	}
 }
 
@@ -95,21 +101,27 @@ holiday.updateColors = function() {
 		var color = holiday.lightValues[i];
 		var istr = i.toString();
 		istr += (istr.length == 1) ? ":  " : ": ";
-		var colorval = color.r + "," + color.g + "," + color.b + "<br>";
-		elt.innerHTML += (istr + colorval);
+		var colorval = color.r.toFixed(0) + "," + color.g.toFixed(0) + "," + color.b.toFixed(0) + "<br>";
+		elt.innerHTML += (/*istr + */colorval);
 	}
 }
 
-holiday.updateDeviceColors = function() {
+holiday.DEVICE_UPDATE_INTERVAL = 100; //ms
+holiday.updateDevice = function() {
 
+	var now = Date.now();
+	if (now - holiday.lastDeviceUpdateTime < holiday.DEVICE_UPDATE_INTERVAL)
+		return;
+	
 	var i, len = holiday.lightValues.length;
 	for (i = 0; i < len; i++) {
 		var color = holiday.lightValues[i];
 		var hex = rgbToHex(color);
-		this.deviceLights[i] = hex;
+		holiday.deviceLights[i] = hex;
 	}
-	this.upload();
-	// this.device.fastlights();
+	holiday.upload();
+	holiday.deviceNeedsUpdate = false;
+	holiday.lastDeviceUpdateTime = now;
 }
 
 holiday.setLights = function(lights) {
@@ -186,6 +198,17 @@ holiday.onLeapSwipe = function(direction, speed) {
     holiday.colorCube.handleLeapSwipe(direction, speed);
 }
 
+holiday.onLeapCircle = function(center, normal) {
+	holiday.colorCube.onKeyTap();
+	
+	return;
+	holiday.circleFill();
+}
+
+holiday.onLeapKeyTap = function(position) {
+	holiday.colorCube.onKeyTap();
+}
+
 // app run loop(s)
 holiday.runLoop = function() {
 	requestAnimationFrame(holiday.runLoop);
@@ -194,18 +217,25 @@ holiday.runLoop = function() {
 	if (holiday.animations) {
 		holiday.animations.update();
 	
-		if (holiday.lightTween && holiday.lightTween.running)
+		if (holiday.lightTween && holiday.lightTween.running) {
 			holiday.updateLights();
+			holiday.deviceNeedsUpdate = true;
+		}
 	}
 	
 	// update any animations
 	if (holiday.programs) {
 		holiday.programs.update();
 	
-		if (holiday.lightProgram && holiday.lightProgram.running)
+		if (holiday.lightProgram && holiday.lightProgram.running) {
 			holiday.updateLights();
+			holiday.deviceNeedsUpdate = true;
+		}			
 	}
 	
+	if (holiday.device && holiday.deviceNeedsUpdate) {		
+		holiday.updateDevice();
+	}
 }
 
 holiday.run = function() {
@@ -248,6 +278,25 @@ holiday.stopProgram = function() {
 	holiday.lightProgram = null;
 }
 
+holiday.circleFill = function() {
+
+	if (holiday.currentLight == -1)
+		holiday.currentLight = 0;
+	
+	var color = holiday.lightValues[holiday.currentLight];
+	color = { r : color.r, g : color.g, b : color.b };
+	var csscolor = rgbToCSS(color);
+
+	for (var i = 0; i <= holiday.NUM_LIGHTS; i++) {
+		holiday.lightValues[holiday.currentLight].setRGB(color.r, color.g, color.b);
+		holiday.lightCircle.setLightColor(holiday.currentLight, csscolor);
+		holiday.currentLight++;
+		if (holiday.currentLight >= holiday.NUM_LIGHTS)
+			holiday.currentLight = 0;
+	}
+
+	holiday.deviceNeedsUpdate = true;
+}
 
 // file serialization and device upload
 holiday.DATA_FILE = '../data/holiday%d.json';
@@ -286,7 +335,7 @@ holiday.onFileLoaded = function(path, text) {
 			var frame = setup[propF];
 			holiday.setLights(frame);
 			holiday.lightCircle.setLight(0);
-			holiday.updateDeviceColors();
+			holiday.deviceNeedsUpdate = true;
 		}
 	}
 }
@@ -328,7 +377,7 @@ holiday.save = function() {
 
 holiday.upload = function() {
 	
-	var data = { lights : this.device.fast2json() };
+	var data = { lights : holiday.device.fast2json() };
 	// data.lights = '{ "lights": [ "#ff7f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf" ] }';
 	var timestamp = holiday.PHP_TIMESTAMP_ARG + Date.now();
 	var url = holiday.PHP_FILE + "?" + holiday.PHP_UPLOAD_ACTION + "&" + timestamp;
@@ -350,5 +399,6 @@ holiday.clear = function() {
 	}
 	
 	holiday.updateLights();
+	holiday.deviceNeedsUpdate = true;
 }
 

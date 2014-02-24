@@ -99,4 +99,4 @@ LightPrograms.Cycle.prototype.cycle = function() {
 	}
 }
 
-LightPrograms.Cycle.interval = 500; // ms
+LightPrograms.Cycle.interval = 200; // ms

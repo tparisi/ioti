@@ -25,7 +25,7 @@ else if ($action == 'upload') {
 
 	$data = $_POST["lights"];
 
-	print_r($data);
+	//print_r($data);
 	
 	$url = "http://holiday-ac3064.local/device/light/setlights";
 
@@ -34,7 +34,7 @@ else if ($action == 'upload') {
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 	curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-	echo ($query . "\n");
+	//echo ($query . "\n");
 	// Make the REST call, returning the result
 	$response = curl_exec($curl);
 	if (!$response) {

@@ -68,21 +68,40 @@ LeapController.prototype.handleFrame = function(frame) {
 
     for (g in frame.gestures) {
     	var gesture = frame.gestures[g];
-    	if (gesture.type == "swipe") {
-	    	if (gesture.direction) {
-	//    		console.log (frame.gestures[0].direction);
-		    	if (this.swipeCallback)
-		    		this.swipeCallback(gesture.direction, gesture.speed);
-	    	}
-    	}
-    	else if (gesture.type == "screenTap") {
-    		if (gesture.position) {
-        		console.log("Screen tap! ", gesture.position);
-    		}
-    	}
-    	else {
-    		console.log("Got gesture, type = ", gesture.type);
-    	}
+    	switch (gesture.type) {
+	    	case "swipe" :
+		    	if (gesture.direction) {
+			    	if (this.swipeCallback)
+			    		this.swipeCallback(gesture.direction, gesture.speed);
+		    	}
+	    		break;
+    		
+	    	case "screenTap" :
+	    		if (gesture.position) {
+	        		console.log("Screen tap: ", gesture.position);
+	    		}
+	    		break;
+
+	    	case "keyTap" :
+	    		if (gesture.position) {
+	        		console.log("Key tap: ", gesture.position);
+			    	if (this.keyTapCallback)
+			    		this.keyTapCallback(gesture.position);
+	    		}
+	    		break;
+	    		
+	    	case "circle" :
+	    		if (gesture.center) {
+	        		console.log("Circle: ", gesture.center);
+			    	if (this.circleCallback)
+			    		this.circleCallback(gesture.center, gesture.normal);
+	    		}
+	    		break;
+	    		
+	    	default :
+	    		console.log("Gesture: ", gesture.type);
+	    		break;
+    	}    	
     }
     
     return;
