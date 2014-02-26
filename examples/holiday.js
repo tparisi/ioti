@@ -19,7 +19,8 @@ holiday.build = function(element, canvasDiv, canvasElement) {
 	holiday.lightElement = document.getElementById("light");
 	holiday.statusElement = document.getElementById("status");
 	holiday.lightValuesElement = document.getElementById("lightValues");
-
+	holiday.codeShowElement = document.getElementById("codeShow");
+	
 	holiday.statusElement.innerHTML += "initializing layout...<br>";
 
 	holiday.initLightValues();
@@ -48,6 +49,8 @@ holiday.build = function(element, canvasDiv, canvasElement) {
 	holiday.leapController.circleCallback = holiday.onLeapCircle;
 	holiday.leapController.keyTapCallback = holiday.onLeapKeyTap;
 	holiday.statusElement.innerHTML += "done.";
+	holiday.codeShow = new CodeShow(holiday.codeShowElement);
+	holiday.codeShow.src = "./holiday.js";
 	holiday.setLight(0);
 	holiday.statusElement.innerHTML = "";
 }
@@ -80,6 +83,13 @@ holiday.handleColor = function(color) {
 }
 
 holiday.setColor = function(color) {
+	
+	holiday.codeShow.src = './colorCube.js';
+	if (holiday.fillMode) {
+		holiday.clear(color);
+		return;
+	}
+	
 	if (color) {
 		if (holiday.currentLight != -1) {
 			holiday.lightValues[holiday.currentLight].setRGB(color.r, color.g, color.b);
@@ -146,6 +156,7 @@ holiday.updateLights = function() {
 
 // light handling
 holiday.setLight = function(lightIndex) {
+	
 	holiday.currentLight = lightIndex;
 	if (holiday.currentLight != -1) {
 		holiday.lightElement.innerHTML = holiday.currentLight;
@@ -242,6 +253,7 @@ holiday.run = function() {
 	holiday.colorCube.run();
 	holiday.lightCircle.run();
 	holiday.leapController.run();
+	holiday.codeShow.run();
 	
 	holiday.runLoop();
 }
@@ -260,6 +272,11 @@ holiday.stopAnimation = function() {
 	
 	holiday.lightTween.stop();
 	holiday.lightTween = null;
+}
+
+holiday.toggleFillMode = function() {
+	holiday.codeShow.src = './holiday.js';
+	holiday.fillMode = !holiday.fillMode;
 }
 
 holiday.runProgram = function() {
@@ -391,11 +408,16 @@ holiday.upload = function() {
 	});	
 }
 
-holiday.clear = function() {
+holiday.clear = function(color) {
 	
 	var i;
 	for (i = 0; i < holiday.NUM_LIGHTS; i++) {
-		holiday.lightValues[i].setRGB(0, 0, 0);
+		if (color) {
+			holiday.lightValues[i].setRGB(color.r, color.g, color.b);
+		}
+		else {
+			holiday.lightValues[i].setRGB(0, 0, 0);
+		}
 	}
 	
 	holiday.updateLights();

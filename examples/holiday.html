@@ -20,6 +20,7 @@
 <script src="./leapController.js" ></script>
 <script src="./animation.js" ></script>
 <script src="./programs.js" ></script>
+<script src="./codeShow.js" ></script>
 <title>Holiday</title>
 
 <style>
@@ -84,6 +85,24 @@ body {
 	color:gray;
 }
 
+#codeShow {
+	position:absolute;
+	top:20%;
+	left: 20px;
+	height:60%;
+	width:600px;
+	font-size:16px;
+	font-style:italic;
+	color:gray;
+	overflow:hidden;
+	border:0px dotted;
+	z-index:-20;
+/*
+	-webkit-transform:rotateX(30deg) rotateY(-60deg);
+	-webkit-perspective:100px;
+*/
+}
+
 #actions {
 	position:absolute;
 	right:100px;
@@ -128,6 +147,10 @@ function stopAnimation() {
 	holiday.stopAnimation();
 }
 
+function toggleFillMode() {
+	holiday.toggleFillMode();
+}
+
 </script>
 </head>
 <body>
@@ -150,6 +173,11 @@ function stopAnimation() {
 <div id="lightValues">
 </div>
 </div>
+<div id="codeShow">
+<!-- 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam elit orci, sollicitudin ac tristique eget, rhoncus vitae dolor. Proin ac tellus fermentum, scelerisque nibh eleifend, ultrices risus. Nam rutrum ornare volutpat. Nunc faucibus laoreet elit, a suscipit leo. Ut aliquet massa sit amet mauris malesuada, ut dictum sem congue. Aliquam ut dolor viverra, dapibus eros at, porta dui. Vivamus elementum mauris sit amet mauris rhoncus, at scelerisque risus porta. Vestibulum ornare libero vel porttitor imperdiet. Nam ante risus,
+ -->
+</div>
 <div id="actions" style="color:black;">
 	<input type="button" value="Load" onclick="load();" style="color:black;"></input>
 	<input type="button" value="Save" onclick="save();" style="color:black;"></input>
@@ -158,6 +186,7 @@ function stopAnimation() {
 	 -->
 	<input type="button" value="Play" onclick="playAnimation();" style="color:black;"></input>
 	<input type="button" value="Stop" onclick="stopAnimation();" style="color:black;"></input>
+	<input type="checkbox" unchecked onclick="toggleFillMode();">Fill</input>
 </div>
 </body>
 </html>

@@ -23,3 +23,10 @@
   font-weight: 700;
   src: local('PT Sans Bold Italic'), local('PTSans-BoldItalic'), url(../fonts/PT_Sans/v5/lILlYDvubYemzYzN7GbLkKRDOzjiPcYnFooOUGCOsRk.woff) format('woff');
 }
+
+@font-face {
+	font-family: 'Aspire DemiBold';
+	src: local('âº'), url('../fonts/Aspire-DemiBold.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
