@@ -49,6 +49,8 @@ CodeShow.prototype.run = function() {
 
 CodeShow.prototype.animate = function() {
 	
+	return;
+	
 	var now = Date.now();
 	var deltat = now - this._lastUpdateTime;
 	if (deltat >= CodeShow.ANIMATE_INTERVAL) {

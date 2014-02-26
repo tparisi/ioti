@@ -5,6 +5,8 @@ ColorCube = function(element) {
 	element.addEventListener('mousedown', function(event) { that.onMouseDown(event); }, false );
 	element.addEventListener('mouseup', function(event) { that.onMouseUp(event); }, false );
 	element.addEventListener('mousemove', function(event) { that.onMouseMove(event); }, false );
+	element.addEventListener( 'mousewheel', function(event) { that.onMouseWheel(event); }, false );
+	element.addEventListener( 'DOMMouseScroll', function(event) { that.onMouseWheel(event); }, false ); // firefox
 
 	this.domElement = element;
 	
@@ -21,6 +23,7 @@ ColorCube = function(element) {
 	this.lastLeapYaw = 0;
 	this.lastLeapRoll = 0;
 	this.lastMouseEvent = null;
+	this.zoomLevel = 0;
 }
 
 ColorCube.prototype = new Object;
@@ -80,6 +83,87 @@ ColorCube.prototype.calcElementOffset = function(offset) {
 
 ColorCube.prototype.onMouseMove = function(event) {
 	this.lastMouseEvent = event;
+}
+
+ColorCube.prototype.onMouseWheel = function( event ) {
+
+	event.preventDefault();
+
+	var delta = 0;
+
+	if ( event.wheelDelta ) { // WebKit / Opera / Explorer 9
+
+		delta = event.wheelDelta;
+
+	} else if ( event.detail ) { // Firefox
+
+		delta = - event.detail;
+
+	}
+
+	if ( delta > 0 ) {
+
+		this.zoomIn(delta);
+
+	} else {
+
+		this.zoomOut(delta);
+
+	}
+
+	var scale = 1;
+	switch (this.zoomLevel) {
+		case 1 :
+			scale = 1.2;
+			break;
+		case 2 :
+			scale = 1.7;
+			break;
+		case 3 :
+			scale = 2.5;
+			break;
+	}
+	
+	this.group.transform.scale.set(scale, scale, scale);
+}
+
+ColorCube.prototype.zoomIn = function(delta) {
+	
+	if (delta < 1)
+		return;
+	
+	var level = this.zoomLevel++;
+	if (this.zoomLevel >= 2)
+		this.zoomLevel = 2;
+	
+	var shell = this.shells[level];
+	var i, len = shell.length;
+	for (i = 0; i < len; i++) {
+		shell[i].visuals[0].visible = false;
+		if (ColorCube.USE_WIREFRAME_FOR_CUBE) {
+			shell[i].getChild(0).visuals[0].visible = false;
+		}
+	}
+	
+}
+
+ColorCube.prototype.zoomOut = function(delta) {
+
+	if (delta > -1)
+		return;
+	
+	var level = this.zoomLevel--;
+	if (this.zoomLevel < 0)
+		this.zoomLevel = 0;
+	
+	var shell = this.shells[level];
+	var i, len = shell.length;
+	for (i = 0; i < len; i++) {
+		shell[i].visuals[0].visible = true;
+		if (ColorCube.USE_WIREFRAME_FOR_CUBE) {
+			shell[i].getChild(0).visuals[0].visible = true;
+		}
+	}
 }
 
 ColorCube.prototype.onKeyTap = function() {
@@ -257,6 +341,8 @@ ColorCube.prototype.createCubes = function() {
 	
 	var group = this.group;
 	
+	this.shells = [ [], [], [], [] ];
+	
 	var i, j, k;
 	var x = -2;
 	var r = 0;
@@ -307,9 +393,23 @@ ColorCube.prototype.createCubes = function() {
 			    b += 32;
 			    // Add the cube the group
 				this.group.addChild(cube);
+
+				if (i == 0 || i == 8 || j == 0 || j == 8 || k == 0 || k == 8) {
+			    	this.shells[0].push(cube);
+				}
+				else if (i == 1 || i == 7 || j == 1 || j == 7 || k == 1 || k == 7) {
+			    	this.shells[1].push(cube);
+				}
+				else if (i == 2 || i == 6 || j == 2 || j == 6 || k == 2 || k == 6) {
+			    	this.shells[2].push(cube);
+				}
+				else if (i == 3 || i == 5 || j == 3 || j == 5 || k == 3 || k == 5) {
+			    	this.shells[3].push(cube);
+				}
 			}
 		    y += .5;
 		    g += 32;
+		    
 		}
 	    x += .5;
 	    r += 32;
