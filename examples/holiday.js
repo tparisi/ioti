@@ -50,7 +50,6 @@ holiday.build = function(element, canvasDiv, canvasElement) {
 	holiday.leapController.keyTapCallback = holiday.onLeapKeyTap;
 	holiday.statusElement.innerHTML += "done.";
 	holiday.codeShow = new CodeShow(holiday.codeShowElement);
-	holiday.codeShow.src = "./holiday.js";
 	holiday.setLight(0);
 	holiday.statusElement.innerHTML = "";
 }
@@ -84,7 +83,6 @@ holiday.handleColor = function(color) {
 
 holiday.setColor = function(color) {
 	
-	holiday.codeShow.src = './colorCube.js';
 	if (holiday.fillMode) {
 		holiday.clear(color);
 		return;
@@ -275,7 +273,6 @@ holiday.stopAnimation = function() {
 }
 
 holiday.toggleFillMode = function() {
-	holiday.codeShow.src = './holiday.js';
 	holiday.fillMode = !holiday.fillMode;
 }
 

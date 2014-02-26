@@ -20,7 +20,7 @@ CodeShow = function(element) {
 	            return this._lineNumber;
 	        },
 	        set: function(v) {
-	        	this._lineNumber = v;
+	        	this._setLineNumber(v);
 	        }
     	},    	
 
@@ -39,6 +39,7 @@ CodeShow.prototype.runLoop = function() {
 }
 
 CodeShow.prototype.run = function() {
+	this.src = "./colorCube.js";
 	this._startTime = Date.now();
 	if (this._text && this._domElement) {
 		this._domElement.text = this._text;
@@ -47,14 +48,39 @@ CodeShow.prototype.run = function() {
 }
 
 CodeShow.prototype.animate = function() {
+	
 	var now = Date.now();
 	var deltat = now - this._lastUpdateTime;
 	if (deltat >= CodeShow.ANIMATE_INTERVAL) {
 //		console.log("CodeShow animating...");
 		var elapsed = now - this._startTime;
-		this._lineNumber = elapsed / (CodeShow.LINES_PER_SECOND * 1000);
-		this._domElement.scrollTop = this._lineNumber * CodeShow.LINE_HEIGHT;
+		if (elapsed > 40000) {
+		}
+		else if (elapsed > 30000) {
+			this.src = "./leapController.js";
+			this.lineNumber = 0;
+		}
+		else if (elapsed > 20000) {
+			this.src = "../libs/moorescloud/holiday.js";
+			this.lineNumber = 0;
+		}
+		else if (elapsed > 10000) {
+			this.src = "./lightCircle.js";
+			this.lineNumber = 0;
+		}
+		
+		{
+			this._lineNumber = elapsed / 1000 * CodeShow.LINES_PER_SECOND;
+			this._domElement.scrollTop = this._lineNumber * CodeShow.LINE_HEIGHT;
+		}
 		this._lastUpdateTime = now;
+	}
+}
+
+CodeShow.prototype._setLineNumber = function(v) {
+	this._lineNumber = v;
+	if (this._domElement) {
+		this._domElement.scrollTop = this._lineNumber * CodeShow.LINE_HEIGHT;
 	}
 }
 
@@ -89,8 +115,7 @@ CodeShow.prototype.handleSourceLoaded = function(path, text) {
 	this._text = text;
 	if (this._domElement) {		
 		this._domElement.innerHTML = "<pre>" + text + "</pre>";
-		this._lineNumber = 0;
-		this._startTime = Date.now();
+		this._domElement.scrollTop = this._lineNumber * CodeShow.LINE_HEIGHT;
 	}
 }
 
@@ -100,8 +125,8 @@ CodeShow.prototype.handleFileError = function(path, status) {
 
 // Constants
 CodeShow.ANIMATE_INTERVAL = 60; //ms
-CodeShow.LINE_HEIGHT = 10; //px
-CodeShow.LINES_PER_SECOND = 1; //px
+CodeShow.LINE_HEIGHT = 12; //px
+CodeShow.LINES_PER_SECOND = 1;
 
 
 
