@@ -38,8 +38,17 @@ CodeShow.prototype.runLoop = function() {
 	this.animate();
 }
 
+CodeShow.files = [
+                  	"./colorCube.js",
+                  	"./lightCircle.js",
+                  	"../libs/vizi/vizi.js",
+                  	"../libs/moorescloud/holiday.js",
+                  	"../libs/leapjs/leap.js",
+                  ];
+
 CodeShow.prototype.run = function() {
-	this.src = "./colorCube.js";
+	this.src = CodeShow.files[0];
+	this.currentFileIndex = 0;
 	this._startTime = Date.now();
 	if (this._text && this._domElement) {
 		this._domElement.text = this._text;
@@ -77,6 +86,23 @@ CodeShow.prototype.animate = function() {
 		}
 		this._lastUpdateTime = now;
 	}
+}
+
+CodeShow.prototype.next = function() {
+	this.currentFileIndex++;
+	if (this.currentFileIndex > CodeShow.files.length)
+		this.currentFileIndex = 0;
+	
+	this.src = CodeShow.files[this.currentFileIndex];
+}
+
+CodeShow.prototype.previous = function() {
+	--this.currentFileIndex;
+	if (this.currentFileIndex < 0)
+		this.currentFileIndex = CodeShow.files.length - 1;
+	
+	this.src = CodeShow.files[this.currentFileIndex];
+
 }
 
 CodeShow.prototype._setLineNumber = function(v) {

@@ -8,6 +8,7 @@ ColorCube = function(element) {
 	element.addEventListener( 'mousewheel', function(event) { that.onMouseWheel(event); }, false );
 	element.addEventListener( 'DOMMouseScroll', function(event) { that.onMouseWheel(event); }, false ); // firefox
 
+	element.addEventListener()
 	this.domElement = element;
 	
 	this.initScene();
@@ -87,6 +88,8 @@ ColorCube.prototype.onMouseMove = function(event) {
 
 ColorCube.prototype.onMouseWheel = function( event ) {
 
+	return;
+	
 	event.preventDefault();
 
 	var delta = 0;
@@ -117,14 +120,27 @@ ColorCube.prototype.onMouseWheel = function( event ) {
 			scale = 1.2;
 			break;
 		case 2 :
-			scale = 1.7;
+			scale = 1.2 * 1.2;
 			break;
 		case 3 :
-			scale = 2.5;
+			scale = 1.2 * 1.2 * 1.2;
 			break;
 	}
 	
 	this.group.transform.scale.set(scale, scale, scale);
+}
+
+var KEY_LEFT  = 37;
+var KEY_UP  = 38;
+var KEY_RIGHT  = 39;
+var KEY_DOWN  = 40;
+
+ColorCube.prototype.handleKeyDown = function(event)
+{
+	if (event.keyCode == KEY_UP)
+		this.zoomIn(1);
+	else if (event.keyCode == KEY_UP)
+		this.zoomOut(-1);
 }
 
 ColorCube.prototype.zoomIn = function(delta) {

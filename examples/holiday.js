@@ -55,13 +55,19 @@ holiday.build = function(element, canvasDiv, canvasElement) {
 }
 
 holiday.initLightValues = function() {
-	var values = new Array(holiday.NUM_LIGHTS);
-	var i, len = values.length;
-	for (i = 0; i < len; i++) {
-		values[i] = new THREE.Color(0, 0, 0);
+	holiday.lightArrays = new Array(4);
+	
+	for (var ar = 0; ar < 4; ar++) {
+		var values = new Array(holiday.NUM_LIGHTS);
+		var i, len = values.length;
+		for (i = 0; i < len; i++) {
+			values[i] = new THREE.Color(0, 0, 0);
+		}
+		
+		holiday.lightArrays[ar] = values;
 	}
 	
-	holiday.lightValues = values;
+	holiday.lightValues = holiday.lightArrays[0];
 }
 
 holiday.initDevices = function() {
@@ -157,10 +163,16 @@ holiday.setLight = function(lightIndex) {
 	
 	holiday.currentLight = lightIndex;
 	if (holiday.currentLight != -1) {
-		holiday.lightElement.innerHTML = holiday.currentLight;
+//		holiday.lightElement.innerHTML = holiday.currentLight;
 	}
 }
 
+// device handling
+holiday.setDevice = function(device) {
+	holiday.currentDevice = device;
+	holiday.lightValues = holiday.lightArrays[device];
+	holiday.updateLights();
+}
 
 // event handling
 holiday.onWindowResize = function(event) {
@@ -274,6 +286,14 @@ holiday.stopAnimation = function() {
 
 holiday.toggleFillMode = function() {
 	holiday.fillMode = !holiday.fillMode;
+}
+
+holiday.codeShowNext = function() {
+	holiday.codeShow.next();
+}
+
+holiday.codeShowPrevious = function() {
+	holiday.codeShow.previous();
 }
 
 holiday.runProgram = function() {
@@ -393,8 +413,10 @@ holiday.upload = function() {
 	
 	var data = { lights : holiday.device.fast2json() };
 	// data.lights = '{ "lights": [ "#ff7f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff5f5f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#ff3f1f", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf", "#dfffbf" ] }';
+	var url = holiday.PHP_FILE + "?" + holiday.PHP_UPLOAD_ACTION;
+	var device = holiday.PHP_DEVICE_ARG + holiday.currentDevice;
 	var timestamp = holiday.PHP_TIMESTAMP_ARG + Date.now();
-	var url = holiday.PHP_FILE + "?" + holiday.PHP_UPLOAD_ACTION + "&" + timestamp;
+	url = [url, device, timestamp].join("&");
 	var saveData = $.ajax({
 	      type: 'POST',
 	      url: url,

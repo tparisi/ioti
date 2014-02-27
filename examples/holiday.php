@@ -24,12 +24,24 @@ if ($action == 'save') {
 else if ($action == 'upload') {
 
 	$data = $_POST["lights"];
-
-	//print_r($data);
+	$device = $_GET['device'];
 	
-	$url = "http://holiday-ac3064.local/device/light/setlights";
+	//print_r($data);
+	$host = "";
+	$api = "device/light/setlights";
+	switch ($device) {
+		case "0" :
+			$host = "http://localhost:8080/";
+			break;
+		case "1" :
+			$host = "http://holiday-ac3064.local/";
+			break;
+	}
 
+	$url = $host . $api;
+	
 	$curl = curl_init($url);
+	
 	curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
