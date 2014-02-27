@@ -116,7 +116,7 @@ holiday.updateColors = function() {
 		var istr = i.toString();
 		istr += (istr.length == 1) ? ":  " : ": ";
 		var colorval = color.r.toFixed(0) + "," + color.g.toFixed(0) + "," + color.b.toFixed(0) + "<br>";
-		elt.innerHTML += (/*istr + */colorval);
+		// elt.innerHTML += (/*istr + */colorval);
 	}
 }
 

@@ -117,13 +117,13 @@ ColorCube.prototype.onMouseWheel = function( event ) {
 	var scale = 1;
 	switch (this.zoomLevel) {
 		case 1 :
-			scale = 1.2;
+			scale = 1.3;
 			break;
 		case 2 :
-			scale = 1.2 * 1.2;
+			scale = 1.3 * 1.3;
 			break;
 		case 3 :
-			scale = 1.2 * 1.2 * 1.2;
+			scale = 1.3 * 1.3 * 1.3;
 			break;
 	}
 	
