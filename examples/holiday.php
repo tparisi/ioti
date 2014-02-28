@@ -31,10 +31,16 @@ else if ($action == 'upload') {
 	$api = "device/light/setlights";
 	switch ($device) {
 		case "0" :
-			$host = "http://localhost:8080/";
+			$host = "http://holiday-0.local/";
 			break;
 		case "1" :
-			$host = "http://holiday-ac3064.local/";
+			$host = "http://holiday-1.local/";
+			break;
+		case "2" :
+			$host = "http://holiday-2.local/";
+			break;
+		case "3" :
+			$host = "http://holiday-3.local/";
 			break;
 	}
 

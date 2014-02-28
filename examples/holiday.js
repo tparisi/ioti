@@ -49,7 +49,7 @@ holiday.build = function(element, canvasDiv, canvasElement) {
 	holiday.leapController.circleCallback = holiday.onLeapCircle;
 	holiday.leapController.keyTapCallback = holiday.onLeapKeyTap;
 	holiday.statusElement.innerHTML += "done.";
-	holiday.codeShow = new CodeShow(holiday.codeShowElement);
+	//holiday.codeShow = new CodeShow(holiday.codeShowElement);
 	holiday.setLight(0);
 	holiday.statusElement.innerHTML = "";
 }
@@ -263,7 +263,7 @@ holiday.run = function() {
 	holiday.colorCube.run();
 	holiday.lightCircle.run();
 	holiday.leapController.run();
-	holiday.codeShow.run();
+	//holiday.codeShow.run();
 	
 	holiday.runLoop();
 }
